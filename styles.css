@@ -81,6 +81,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .panel .big{font-size:30px;line-height:36px;font-weight:700}
 .panel .small{font-size:12px;line-height:17px;opacity:.6}
 
+/* info: a white strip across the middle of the screen, tilted like in the Figma */
+.tilt{position:absolute;left:959.8px;top:578.5px;width:1758.72px;height:82.06px;transform:translate(-50%,-50%) rotate(-24.24deg);background:#fff;z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 16px;color:#000;text-transform:uppercase;white-space:nowrap}
+.tilt[hidden]{display:none}
+.tilt:not([hidden]){animation:tiltIn .5s cubic-bezier(.2,.7,.2,1)}
+.tilt p{margin:0;width:max-content;font:400 calc(13px*var(--k,1))/20px var(--sans)}
+.tilt .h{font-weight:550;font-size:calc(16px*var(--k,1))}
+.tilt .f{color:#7e7e7e}
+@keyframes tiltIn{from{opacity:0;transform:translate(calc(-50% - 60px),calc(-50% + 26px)) rotate(-24.24deg)}to{opacity:1;transform:translate(-50%,-50%) rotate(-24.24deg)}}
+
 /* index: typed-catalogue style, "No." + dot leader + count */
 .ix{list-style:none;margin:0;padding:0}
 .ix button{display:flex;align-items:flex-end;gap:10px;width:100%;padding:11px 0;text-align:left;font-size:17px;line-height:20px}
@@ -124,7 +133,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* mobile: same drawer, one column at a time; hover becomes tap */
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
-.m .spine,.m .ttl,.m .flaps{display:none}
+.m .spine,.m .ttl,.m .flaps,.m .tilt{display:none}
 .m .tab path{vector-effect:non-scaling-stroke}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
 .m .mt{--L:190px;position:absolute;left:50%;top:20px;transform:translateX(-50%)}

@@ -1,6 +1,6 @@
 /* Collection: one folder column per category (Desktop - 4), scrolling sideways like a filing drawer. */
 const $=s=>document.querySelector(s);
-const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card');
+const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card'),tilt=$('#tilt');
 
 const ROW_Y=[39.87,191.58,343.30,495.01,646.72,798.43,950.15];
 const ROW_PITCH=151.71,ITEM_H=65,ITEM_X=40.75;
@@ -100,8 +100,8 @@ function fitStage(){
 addEventListener('resize',fitStage);fitStage();
 
 /* hover sheet: a blank white sheet in the item's format; pointer-events none, so the next entry stays reachable underneath */
-/* every sheet shares one tall height (about 96% of the frame); only very wide formats are capped so they stay inside the page */
-const SHEET_H=1040,SHEET_MAXW=1760;
+/* every sheet shares one tall height (about 87% of the frame); only very wide formats are capped so they stay inside the page */
+const SHEET_H=936,SHEET_MAXW=1584;
 let hideT=0;
 function show(el){
   if(!card.hidden||mq.matches)return;
@@ -261,15 +261,25 @@ const PANELS={
   team:`<h2>Team</h2><p class="big">Name Surname<br>Name Surname<br>Name Surname</p><p>Placeholder names. Each template credits the creative who made it.</p>`,
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
-function closePanel(){panel.hidden=true}
+function closePanel(){panel.hidden=true;tilt.hidden=true}
+function openPanel(name){
+  hide(true);closeCard();
+  if(name==='info'&&!mq.matches){
+    panel.hidden=true;tilt.hidden=false;
+    /* Libre Franklin runs wider than Franklin Gothic: shrink the lines so the longest still fits the strip */
+    tilt.style.setProperty('--k',1);
+    const need=Math.max(...[...tilt.children].map(p=>p.offsetWidth)),room=tilt.clientWidth-32;
+    if(need>room)tilt.style.setProperty('--k',(room/need).toFixed(4));
+  }else{tilt.hidden=true;panel.innerHTML=PANELS[name];panel.hidden=false}
+}
 document.addEventListener('click',e=>{
-  if(!mq.matches){const k=flapAt(e);if(k>=0){hide(true);closeCard();panel.innerHTML=PANELS[FLAP_ID[k]];panel.hidden=false;return}}
+  if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
   const b=e.target.closest('[data-panel]');
-  if(b){hide(true);closeCard();panel.innerHTML=PANELS[b.dataset.panel];panel.hidden=false;return}
-  if(!panel.hidden&&!panel.contains(e.target))closePanel();
+  if(b){openPanel(b.dataset.panel);return}
+  if((!panel.hidden||!tilt.hidden)&&!panel.contains(e.target)&&!tilt.contains(e.target))closePanel();
   if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item'))closeCard();
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closePanel();closeCard();hide(true)}
-  else if(panel.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
+  else if(panel.hidden&&tilt.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
 });
