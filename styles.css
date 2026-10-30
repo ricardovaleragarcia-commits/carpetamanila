@@ -106,7 +106,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .face .ct a{display:block;font:550 10.054px/13.39px var(--sans);text-transform:uppercase;text-align:center;color:#000;text-decoration:none;white-space:nowrap}
 .face .ct a:hover{text-decoration:underline;text-underline-offset:2px}
 .face p{position:absolute;left:0;right:0;top:140px;margin:0;font:550 10.054px/12px var(--sans);text-transform:uppercase;text-align:center;white-space:nowrap}
-.face .loc{top:258.6px;line-height:13.39px}
+.face .loc{top:245px;line-height:13.39px}
 
 /* team: an office name tag, stainless steel with engraved lettering, turned -16.9 degrees */
 .ntag{position:absolute;left:1199.4px;top:641.16px;width:0;height:0;transform:rotate(-16.9deg);pointer-events:none}
