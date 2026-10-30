@@ -69,7 +69,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* hover sheet: a blank white sheet centred where Desktop - 2 puts the white rectangle */
 .sheet,.panel,.card{position:absolute;left:650.11px;top:136.96px;width:619.79px;height:806.08px}
-.sheet{opacity:0;pointer-events:none;transition:opacity .12s;z-index:20}
+.sheet{opacity:0;pointer-events:none;transition:opacity .12s;z-index:60}
 .sheet.on{opacity:1}
 .blank{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff}
 .panel{background:#fff;overflow:hidden}
@@ -82,13 +82,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .panel .small{font-size:12px;line-height:17px;opacity:.6}
 
 /* info: a white strip across the middle of the screen, tilted like in the Figma */
-.tilt{position:absolute;left:959.8px;top:578.5px;width:1758.72px;height:82.06px;transform:translate(-50%,-50%) rotate(-24.24deg);background:#fff;z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 16px;color:#000;text-transform:uppercase;white-space:nowrap}
+.tilt{position:absolute;left:960px;top:540px;pointer-events:none;width:1758.72px;height:82.06px;transform:translate(-50%,-50%) rotate(-24.24deg);background:#fff;z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 16px;color:#000;text-transform:uppercase;white-space:nowrap}
 .tilt[hidden]{display:none}
-.tilt:not([hidden]){animation:tiltIn .5s cubic-bezier(.2,.7,.2,1)}
+.tilt:not([hidden]){animation:fade .35s ease}
 .tilt p{margin:0;width:max-content;font:400 calc(13px*var(--k,1))/20px var(--sans)}
 .tilt .h{font-weight:550;font-size:calc(16px*var(--k,1))}
 .tilt .f{color:#7e7e7e}
-@keyframes tiltIn{from{opacity:0;transform:translate(calc(-50% - 60px),calc(-50% + 26px)) rotate(-24.24deg)}to{opacity:1;transform:translate(-50%,-50%) rotate(-24.24deg)}}
 
 /* index: typed-catalogue style, "No." + dot leader + count */
 .ix{list-style:none;margin:0;padding:0}

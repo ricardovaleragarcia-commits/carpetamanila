@@ -262,21 +262,24 @@ const PANELS={
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
 function closePanel(){panel.hidden=true;tilt.hidden=true}
+/* the three flaps open their blocks on click. They stack on screen and stay until a click lands outside. Only Info has a design so far. */
 function openPanel(name){
   hide(true);closeCard();
-  if(name==='info'&&!mq.matches){
-    panel.hidden=true;tilt.hidden=false;
-    /* Libre Franklin runs wider than Franklin Gothic: shrink the lines so the longest still fits the strip */
+  if(name==='info'){
+    if(mq.matches){tilt.hidden=true;panel.innerHTML=PANELS.info;panel.hidden=false;return}
+    tilt.hidden=false;
+    /* the strip is as long as in the Figma: scale the three lines so the longest one fills it like the design does */
     tilt.style.setProperty('--k',1);
     const need=Math.max(...[...tilt.children].map(p=>p.offsetWidth)),room=tilt.clientWidth-32;
-    if(need>room)tilt.style.setProperty('--k',(room/need).toFixed(4));
-  }else{tilt.hidden=true;panel.innerHTML=PANELS[name];panel.hidden=false}
+    tilt.style.setProperty('--k',(room/need).toFixed(4));
+  }
+  /* Team and Contact: nothing to show yet */
 }
 document.addEventListener('click',e=>{
   if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
   const b=e.target.closest('[data-panel]');
   if(b){openPanel(b.dataset.panel);return}
-  if((!panel.hidden||!tilt.hidden)&&!panel.contains(e.target)&&!tilt.contains(e.target))closePanel();
+  if((!panel.hidden||!tilt.hidden)&&!panel.contains(e.target))closePanel();
   if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item'))closeCard();
 });
 document.addEventListener('keydown',e=>{
