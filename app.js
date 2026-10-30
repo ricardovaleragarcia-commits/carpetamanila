@@ -156,7 +156,7 @@ card.addEventListener('click',e=>{
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function Scroller(el,ax,max,over,snap,RUB=0){
   const get=()=>ax==='x'?el.scrollLeft:el.scrollTop,put=v=>{ax==='x'?el.scrollLeft=v:el.scrollTop=v};
-  let pos=0,tg=0,last=0,raf=0,t0=0,idle=0,k=11;
+  let pos=0,tg=0,last=0,raf=0,t0=0,idle=0,k=11,edgeT=0;
   function frame(t){
     const dt=Math.min(.05,(t-t0)/1000||.016),m=max();t0=t;
     pos+=(tg-pos)*(1-Math.exp(-dt*k));
@@ -167,25 +167,31 @@ function Scroller(el,ax,max,over,snap,RUB=0){
   const run=()=>{if(!raf){t0=performance.now();raf=requestAnimationFrame(frame)}};
   const sync=()=>{if(Math.abs(get()-last)>1.5){pos=tg=get();last=pos}};   /* only adopt the real position if something else moved it */
   function release(){
-    const m=max();tg=clamp(tg,0,m);if(snap)tg=clamp(snap(tg),0,m);
-    k=7;run();
+    const m=max(),over=tg<0||tg>m;
+    tg=clamp(tg,0,m);if(snap)tg=clamp(snap(tg),0,m);
+    if(over)edgeT=performance.now();
+    k=over?14:7;run();                 /* a stretched end snaps back quickly, a normal stop settles gently */
   }
   return{
     at:()=>raf?tg:get(),
     push(d){
       const m=max();if(m<=0)return;
-      sync();k=11;
+      sync();
+      /* at an end, drop the momentum tail: once stretched, or just after bouncing, more outward push is ignored so the bounce stays short */
+      if(RUB&&((tg<=0&&d<0)||(tg>=m&&d>0))&&(tg<0||tg>m||performance.now()-edgeT<450))return;
+      k=11;
       if(!RUB)tg=clamp(tg+d,0,m);       /* columns stop dead at their ends: no bounce */
       else{                              /* the drawer stretches a little past its ends, with growing resistance */
         let rem=d;
         if(tg>=0&&tg<=m){const room=d>0?m-tg:-tg;if(Math.abs(d)<=Math.abs(room)){tg+=d;rem=0}else{tg+=room;rem=d-room}}
         if(rem){
           const o=tg<0?tg:tg>m?tg-m:0,dir=Math.sign(rem);
-          if(o===0||Math.sign(o)===dir)tg=(dir>0?m:0)+clamp(o+rem*Math.max(0,1-Math.abs(o)/RUB)*.35,-RUB,RUB);
+          if(o===0||Math.sign(o)===dir)tg=(dir>0?m:0)+clamp(o+rem*Math.max(0,1-Math.abs(o)/RUB)*.3,-RUB,RUB);
           else tg+=rem;
         }
       }
-      run();clearTimeout(idle);idle=setTimeout(release,130);
+      if(tg<0||tg>m)k=18;                /* the stretch itself follows the pull quickly, then lets go */
+      run();clearTimeout(idle);idle=setTimeout(release,tg<0||tg>m?85:130);
     },
     to(v){sync();const m=max();tg=clamp(v,0,m);k=7;run()}
   };
@@ -193,7 +199,7 @@ function Scroller(el,ax,max,over,snap,RUB=0){
 const cols=[...rail.children];
 const colW=()=>rail.firstElementChild.offsetWidth;
 const maxLeft=()=>rail.scrollWidth-rail.clientWidth;
-const railS=Scroller(rail,'x',maxLeft,v=>cols.forEach(c=>{c.style.transform=v?`translateX(${-v}px)`:''}),v=>{const w=colW(),m=maxLeft(),r=Math.round(v/w)*w;return Math.abs(m-v)<Math.abs(r-v)?m:r},70);
+const railS=Scroller(rail,'x',maxLeft,v=>cols.forEach(c=>{c.style.transform=v?`translateX(${-v}px)`:''}),v=>{const w=colW(),m=maxLeft(),r=Math.round(v/w)*w;return Math.abs(m-v)<Math.abs(r-v)?m:r},18);
 cols.forEach(col=>{
   const cs=col.querySelector('.cs'),ci=col.querySelector('.ci');
   cs._s=Scroller(cs,'y',()=>cs.scrollHeight-cs.clientHeight,v=>{ci.style.transform=v?`translateY(${-v}px)`:''});
