@@ -36,6 +36,9 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* entries */
 .item{position:absolute;left:var(--x);top:var(--y);display:grid;grid-template-columns:38.68px 176px;cursor:pointer;outline-offset:6px}
+/* only the glyphs react: the box itself is inert, each line is as wide as its text */
+.item{pointer-events:none}
+.item .n,.item .t>span{pointer-events:auto;cursor:pointer;width:max-content}
 .item .n{font-weight:700}
 .item .t{display:block;white-space:nowrap}
 .item .t>span{display:block}
@@ -136,7 +139,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .m .col{width:calc(100vw - 46px);height:100%}
 .m .cs{width:calc(100% - 30px)}
 .m .ci{width:100%;padding:26px 20px 60px}
-.m .item{position:relative;left:auto;top:auto;margin:0 0 30px}
+.m .item{position:relative;left:auto;top:auto;margin:0 0 30px;pointer-events:auto}
 .m .tab{left:auto;right:0;top:12px;bottom:12px;width:30px;height:auto}
 .m .lab{left:50%;transform:translateX(-50%)}
 .m .tab.t .lab{top:14%}
