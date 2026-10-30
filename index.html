@@ -12,24 +12,27 @@
 <div id="stage">
   <main id="rail" aria-label="Templates by category"></main>
 
-  <svg class="spine" width="70.017" height="1004.61" viewBox="0 0 70.017 1004.61" fill="none" aria-hidden="true">
-    <path d="M69.5 0V311C69.5 316 67 321 62.5 323.5L7.5 345C3 347.5 .5 352 .5 357V590C.5 595 3 600 7.5 602.5L62.5 624C67 626.5 69.5 631 69.5 636V1004.61" stroke="currentColor"/>
+  <svg class="spine" id="spine" width="140" height="1080" viewBox="0 0 140 1080" fill="none" aria-hidden="true">
+    <path class="faint" d="M29.54 27.19V345.13"/>
+    <path id="spR"/>
+    <path id="spD0"/><path id="spD1"/><path id="spD2"/><path id="spD3"/>
+    <path id="spL"/>
+    <text id="spT0">Info</text><text id="spT1">Team</text><text id="spT2">Contact</text>
   </svg>
   <h1 class="ttl"><img src="assets/logo.svg" alt="Carpeta Manila"></h1>
-  <p class="tag">A growing collection of open access templates &amp; resources.</p>
-
-  <nav id="menu" aria-label="Main">
-    <button class="ml" id="mbtn" aria-expanded="false" aria-controls="mi">Index</button>
-    <div id="mi">
-      <button data-panel="info">Info</button>
-      <button data-panel="team">Team</button>
-      <button data-panel="contact">Contact</button>
-    </div>
+  <nav class="flaps" aria-label="Main">
+    <button data-panel="info">Info</button>
+    <button data-panel="team">Team</button>
+    <button data-panel="contact">Contact</button>
   </nav>
 
   <aside class="strip">
     <h1 class="mt"><img src="assets/logo.svg" alt="Carpeta Manila"></h1>
-    <button id="mmb" data-panel="menu">— Index</button>
+    <nav class="mn">
+      <button data-panel="info">Info</button>
+      <button data-panel="team">Team</button>
+      <button data-panel="contact">Contact</button>
+    </nav>
   </aside>
 
   <div class="sheet" id="sheet" aria-hidden="true"><div class="blank" id="blank"></div></div>

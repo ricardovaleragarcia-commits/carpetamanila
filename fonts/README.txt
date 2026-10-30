@@ -1,1 +1,1 @@
-Besley, by Indestructible Type. Licensed under the SIL Open Font License 1.1 (https://openfontlicense.org). Latin subset, from Google Fonts, self-hosted.
+Libre Franklin, by Impallari Type and Eduardo Tunni. Licensed under the SIL Open Font License 1.1 (https://openfontlicense.org). Variable weight, latin subset, from Google Fonts, self-hosted. It stands in for Franklin Gothic ATF.

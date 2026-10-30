@@ -3,13 +3,11 @@ const $=s=>document.querySelector(s);
 const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card');
 
 const ROW_Y=[39.87,191.58,343.30,495.01,646.72,798.43,950.15];
-const ROW_PITCH=151.71,ITEM_H=85,ITEM_X=61.7;
-const LABELS=['Resumes','Cover Letters','Portfolios','Brand Guidelines','Invoices','Proposals'];
+const ROW_PITCH=151.71,ITEM_H=60,ITEM_X=40.75;
+const LABELS=['Resume','Cover Letter','Portfolio','Brand Guidelines','Invoice','Proposal'];
 const COUNTS=[10,8,9,5,7,3];
-const TAB={
-  t:'M53.5 0V257C53.5 262 51 267 46.5 269.5L7.5 291C3 293.5 .5 298 .5 303V1000',
-  b:'M.5 0V690C.5 695 3 700 7.5 702.5L46.5 724C51 726.5 53.5 731 53.5 736V1000'
-};
+/* tab drawing from the Figma (55 x 1028): right line, a soft step, left line, plus a faint left edge above the step */
+const TAB_D='M54.5088 0V171.938C54.5088 179.418 50.3352 186.273 43.6903 189.706L11.3187 206.434C4.67373 209.868 .500132 216.722 .500132 224.202V324.441L.5 469.92L.500132 514.771L.5 594.486V1027.92';
 const pad=(n,l=2)=>String(n).padStart(l,'0');
 
 /* blank sheets: real paper sizes (mm), so an A5 reads smaller than an A3 */
@@ -61,7 +59,7 @@ const ITEMS=[];
 const byId=new Map(ITEMS.map(i=>[i.id,i]));
 
 COUNTS.forEach((n,t)=>{
-  const col=document.createElement('section'),k=t%2?'b':'t';
+  const col=document.createElement('section'),k=t%2?'t':'b';
   col.className='col';col.setAttribute('aria-label',LABELS[t]);
   const cs=document.createElement('div'),ci=document.createElement('div');
   cs.className='cs';ci.className='ci';ci.style.height=Math.max(1080,ROW_Y[0]+ROW_PITCH*(n-1)+ITEM_H+60)+'px';
@@ -74,7 +72,7 @@ COUNTS.forEach((n,t)=>{
   });
   cs.append(ci);
   const tab=document.createElement('div');tab.className='tab '+k;tab.style.setProperty('--d',(400+t*120)+'ms');
-  tab.innerHTML=`<svg viewBox="0 0 54 1000" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="${TAB[k]}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
+  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M.5 1V184.7" stroke="#c9b795"/><path d="${TAB_D}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
   col.append(cs,tab);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
 });
@@ -201,25 +199,66 @@ document.addEventListener('wheel',e=>{
 },{passive:false});
 rail.addEventListener('scroll',()=>hide(true),{passive:true});
 
-/* menu */
-const menu=$('#menu'),mbtn=$('#mbtn');
-function setMenu(open){menu.classList.toggle('open',open);mbtn.setAttribute('aria-expanded',open);mbtn.textContent=open?'— Index':'Index'}
-mbtn.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
+/* spine flaps: three strips behind the logo. At rest they are slim; the one under the pointer opens, and everything below it moves down with it. */
+const RX=97.2,LX=29.54,DY=58.37,EXTRA=72,STRIP=25;
+const BASE=[338.5,363.4,388.4,413.4];          /* where each diagonal starts on the right line, all strips slim */
+const FLAP_ID=['info','team','contact'];
+const ftext=[0,1,2].map(i=>$('#spT'+i));
+let shift=[0,0,0,0],goal=[0,0,0,0],openFlap=-1,fraf=0,ft0=0;
+const diag=y=>`M${RX} ${y}C${RX} ${y+7.6} 92.89 ${y+14.54} 86.09 ${y+17.92}L40.65 ${y+40.45}C33.85 ${y+43.83} ${LX} ${y+50.77} ${LX} ${y+DY}`;
+function drawFlaps(){
+  const d=BASE.map((b,i)=>b+shift[i]);
+  $('#spR').setAttribute('d',`M${RX} 25.81V${d[3]}`);
+  d.forEach((y,i)=>$('#spD'+i).setAttribute('d',diag(y)));
+  $('#spL').setAttribute('d',`M${LX} ${d[0]+DY}V1055.15`);
+  ftext.forEach((t,k)=>{
+    const o=clamp((d[k+1]-d[k]-STRIP)/EXTRA,0,1),cy=(d[k]+d[k+1])/2+20.9;
+    t.setAttribute('transform',`translate(79.9 ${cy}) rotate(90)`);
+    t.style.opacity=clamp((o-.4)/.6,0,1);
+  });
+}
+function tick(t){
+  const dt=Math.min(.05,(t-ft0)/1000||.016);ft0=t;let moving=false;
+  for(let i=1;i<4;i++){
+    shift[i]+=(goal[i]-shift[i])*(1-Math.exp(-dt*12));
+    if(Math.abs(goal[i]-shift[i])<.05)shift[i]=goal[i];else moving=true;
+  }
+  drawFlaps();fraf=moving?requestAnimationFrame(tick):0;
+}
+function setFlap(k){
+  if(k===openFlap)return;
+  openFlap=k;goal=[0,1,2,3].map(j=>k>=0&&j>k?EXTRA:0);
+  if(!fraf){ft0=performance.now();fraf=requestAnimationFrame(tick)}
+}
+function flapAt(e){
+  const r=stage.getBoundingClientRect(),x=(e.clientX-r.left)/S,y=(e.clientY-r.top)/S;
+  if(x<LX||x>RX+3)return -1;
+  const off=(RX-x)/(RX-LX)*DY,d=BASE.map((b,i)=>b+shift[i]);
+  for(let k=0;k<3;k++)if(y>=d[k]+off&&y<d[k+1]+off)return k;
+  return -1;
+}
+drawFlaps();
+stage.addEventListener('pointermove',e=>{
+  if(mq.matches||e.pointerType==='touch')return;
+  const k=flapAt(e);setFlap(k);stage.classList.toggle('hit',k>=0);
+});
+stage.addEventListener('pointerleave',()=>{setFlap(-1);stage.classList.remove('hit')});
+document.querySelectorAll('.flaps button').forEach((b,i)=>{b.addEventListener('focus',()=>setFlap(i));b.addEventListener('blur',()=>setFlap(-1))});
 
 const PANELS={
   info:`<h2>Info</h2><p class="big">Carpeta Manila is a growing collection of open access templates and resources.</p><p>Every template is original, free to download and made with working designers, art directors and studios. Resumes, portfolios, cover letters, brand guidelines, invoices and more, each one filed in the software you work in.</p><p class="small">Formats: Figma, Canva, InDesign, Word, Pages, Google Docs, Keynote.</p>`,
   team:`<h2>Team</h2><p class="big">Name Surname<br>Name Surname<br>Name Surname</p><p>Placeholder names. Each template credits the creative who made it.</p>`,
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
-PANELS.menu=`<h2>— Index</h2><div class="mlist">${['info','team','contact'].map(k=>`<button data-panel="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>`;
 function closePanel(){panel.hidden=true}
 document.addEventListener('click',e=>{
+  if(!mq.matches){const k=flapAt(e);if(k>=0){hide(true);closeCard();panel.innerHTML=PANELS[FLAP_ID[k]];panel.hidden=false;return}}
   const b=e.target.closest('[data-panel]');
   if(b){hide(true);closeCard();panel.innerHTML=PANELS[b.dataset.panel];panel.hidden=false;return}
   if(!panel.hidden&&!panel.contains(e.target))closePanel();
   if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item'))closeCard();
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closePanel();closeCard();setMenu(false);hide(true)}
+  if(e.key==='Escape'){closePanel();closeCard();hide(true)}
   else if(panel.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
 });
