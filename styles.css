@@ -48,11 +48,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tab svg{display:block;width:100%;height:100%;overflow:visible}
 .tab path,.spine path{stroke-width:.75}
 .lab{
-  position:absolute;left:50%;transform:translateX(-50%);margin:0;
-  writing-mode:vertical-rl;font:500 13px/13px var(--serif);text-transform:uppercase;white-space:nowrap;
+  position:absolute;left:50%;transform:translateX(-50%) scaleY(1.16);transform-origin:50% 0;margin:0;
+  writing-mode:vertical-rl;font:500 15px/15px var(--serif);text-transform:uppercase;white-space:nowrap;
 }
-.tab.t .lab{top:100px}
-.tab.b .lab{top:818px}
+.tab.t .lab{top:80px}
+.tab.b .lab{top:auto;bottom:32px;transform-origin:50% 100%}
 
 /* spine (the cover of the drawer, twice as wide as a tab) */
 .spine{position:absolute;left:37.2px;top:30.92px;color:var(--ink)}
