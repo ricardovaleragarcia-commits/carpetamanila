@@ -127,17 +127,20 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .cover{position:absolute;left:0;top:0;width:140px;height:1080px;pointer-events:none;transform-origin:97.2px 50%;animation:open 1.5s cubic-bezier(.45,.05,.2,1) 250ms backwards}
 .cover .ttl{animation:fade .9s 1s backwards}
 .fold{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:100% 50%;animation:open 1.5s cubic-bezier(.45,.05,.2,1) var(--cd,0ms) backwards}
-/* a flat plane is invisible edge-on, so the edge of each sheet is drawn apart from the turning part. It covers only where the real right line is and fades while the sheet's own lines take over, so the line never blinks out. */
-@keyframes edge{0%,8%{opacity:1}40%,100%{opacity:0}}
-.col::after,.cedge{content:'';position:absolute;width:1px;background:var(--ink);pointer-events:none;animation:edge 1.5s linear var(--cd,0ms) both}
-.col::after{left:328px;top:var(--et,26.18px);height:var(--eh,190px)}
-.cedge{left:97px;top:25.81px;height:388px;--cd:250ms}
+/* a flat plane is invisible edge-on, so the edge of each sheet is drawn apart from the turning part, full height. That full line fades out slowly while the real right line (a second line right under it) stays until the end, so the line never blinks. */
+@keyframes edge{0%,6%{opacity:1}45%,100%{opacity:0}}
+@keyframes seg{0%,92%{opacity:1}100%{opacity:0}}
+.col::before,.col::after,.cedge{content:'';position:absolute;width:1px;background:var(--ink);pointer-events:none}
+.col::after{left:328px;top:26.18px;height:1027.92px;animation:edge 1.5s linear var(--cd,0ms) both}
+.col::before{left:328px;top:var(--et,26.18px);height:var(--eh,190px);animation:seg 1.5s linear var(--cd,0ms) both}
+.cedge{left:97px;top:25.81px;height:1029.3px;--cd:250ms;animation:edge 1.5s linear var(--cd) both}
+.cedge.s{height:388px;animation-name:seg}
 .cs,.lab{animation:fade .8s calc(var(--cd,0ms) + .45s) backwards}   /* only the lines show edge-on; the content fades in as the folder comes forward */
-@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}.col::after,.cedge{display:none}}
+@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}.col::before,.col::after,.cedge{display:none}}
 
 /* mobile: same drawer, one column at a time; hover becomes tap */
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
-.m .spine,.m .ttl,.m .flaps,.m .tilt,.m .cedge,.m .col::after{display:none}
+.m .spine,.m .ttl,.m .flaps,.m .tilt,.m .cedge,.m .col::before,.m .col::after{display:none}
 .m .tab path{vector-effect:non-scaling-stroke}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
 .m .mt{--L:190px;position:absolute;left:50%;top:20px;transform:translateX(-50%)}
