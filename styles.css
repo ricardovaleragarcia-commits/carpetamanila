@@ -74,7 +74,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .blank{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff}
 .panel{background:#fff;overflow:hidden}
 .panel{z-index:40;padding:44px;overflow:auto}
-.card{z-index:45;left:50%;top:50%;width:480px;height:auto;max-height:92%;transform:translate(-50%,-50%);padding:34px 38px 26px;background:#fff;overflow:auto}
+.card{z-index:55;left:50%;top:50%;width:480px;height:auto;max-height:92%;transform:translate(-50%,-50%);padding:34px 38px 26px;background:#fff;overflow:auto}
 .card[hidden]{display:none}
 .panel h2{margin:0 0 20px;font-size:11px;line-height:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
 .panel p{margin:0 0 14px;font-size:15px;line-height:22px}
@@ -92,7 +92,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tilt .f{color:#7e7e7e}
 
 /* team: a grey business card, turned 14 degrees. Click it to turn it over. */
-.tcard{position:absolute;left:754.8px;top:410.05px;width:452.424px;height:276.481px;margin:-138.24px 0 0 -226.21px;transform:rotate(14.04deg);z-index:41;perspective:1400px;cursor:pointer}
+.tcard{position:absolute;left:754.8px;top:410.05px;width:452.424px;height:276.481px;margin:-138.24px 0 0 -226.21px;transform:rotate(14.04deg);perspective:1400px;cursor:pointer}
 .tcard[hidden]{display:none}
 .tcard:not([hidden]){animation:fade .35s ease}
 .tcard.out{animation:fadeOut .3s ease forwards}
@@ -109,7 +109,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .face .loc{top:258.6px;line-height:13.39px}
 
 /* team: an office name tag, stainless steel with engraved lettering, turned -16.9 degrees */
-.ntag{position:absolute;left:1199.4px;top:641.16px;width:0;height:0;transform:rotate(-16.9deg);z-index:42;pointer-events:none}
+.ntag{position:absolute;left:1199.4px;top:641.16px;width:0;height:0;transform:rotate(-16.9deg);pointer-events:none}
 .ntag[hidden]{display:none}
 .ntag:not([hidden]){animation:fade .35s ease}
 .ntag.out{animation:fadeOut .3s ease forwards}

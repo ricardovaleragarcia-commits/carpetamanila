@@ -281,7 +281,15 @@ function fadeClose(el){
   el._t=setTimeout(()=>{el.hidden=true;el.classList.remove('out');el.classList.remove('back')},320);
 }
 function showBlock(el){clearTimeout(el._t);el.classList.remove('out');el.hidden=false}
-function closePanel(){panel.hidden=true;fadeClose(tilt);fadeClose(tcard);fadeClose(ntag)}
+/* the three blocks stack in the order they were clicked: the last one clicked is on top */
+const BLOCK={info:tilt,team:ntag,contact:tcard};
+let order=[];
+function bringFront(name){
+  if(!BLOCK[name])return;
+  order=order.filter(n=>n!==name);order.push(name);
+  order.forEach((n,i)=>{BLOCK[n].style.zIndex=40+i});
+}
+function closePanel(){order=[];panel.hidden=true;fadeClose(tilt);fadeClose(tcard);fadeClose(ntag)}
 function openPanel(name){
   hide(true);closeCard();
   if(name==='info'){
@@ -294,6 +302,7 @@ function openPanel(name){
   }
   if(name==='contact'&&!mq.matches)showBlock(tcard);   /* the grey card now belongs to Contact; its content is a placeholder until the contact data arrives */
   if(name==='team'&&!mq.matches)showBlock(ntag);
+  if(!mq.matches)bringFront(name);
 }
 document.addEventListener('click',e=>{
   if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
