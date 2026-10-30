@@ -91,8 +91,8 @@ function fitStage(){
 addEventListener('resize',fitStage);fitStage();
 
 /* hover sheet: a blank white sheet in the item's format; pointer-events none, so the next entry stays reachable underneath */
-/* every sheet shares one height (the Figma rectangle); only very wide formats are capped so they stay inside the page */
-const SHEET_H=806.08,SHEET_MAXW=1100;
+/* every sheet shares one tall height (about 87% of the frame); only very wide formats are capped so they stay inside the page */
+const SHEET_H=940,SHEET_MAXW=1400;
 let hideT=0;
 function show(el){
   if(!card.hidden||mq.matches)return;
