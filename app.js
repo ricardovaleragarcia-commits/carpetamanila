@@ -84,6 +84,10 @@ function fitTabs(){
     const dy=Math.max(0,62+tab.querySelector('.lab').offsetHeight+48-172);
     tab.querySelector('.tp').setAttribute('d',tabD(dy));
     tab.querySelector('.tf').setAttribute('d',`M.5 1V${184.7+dy}`);
+    /* the edge line used while a folder is edge-on only spans the real right line: above the step on top tabs, below it on bottom tabs */
+    const len=171.9+dy+8,col=tab.closest('.col');
+    col.style.setProperty('--eh',len+'px');
+    col.style.setProperty('--et',(tab.classList.contains('t')?26.18:1054.1-len)+'px');
   });
 }
 document.fonts.ready.then(fitTabs);
