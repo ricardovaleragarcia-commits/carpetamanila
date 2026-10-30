@@ -58,22 +58,22 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .spine{position:absolute;left:37.2px;top:30.92px;color:var(--ink)}
 .ttl,.mt{margin:0;width:calc(var(--L)*.04652);height:var(--L)}
 .ttl img,.mt img{position:absolute;left:50%;top:50%;display:block;width:var(--L);height:calc(var(--L)*.04652);max-width:none;transform:translate(-50%,-50%) rotate(90deg)}
-.ttl{--L:247px;position:absolute;left:107.5px;top:163.4px;transform:translate(-50%,-50%)}
+.ttl{--L:301px;position:absolute;left:107.5px;top:190.4px;transform:translate(-50%,-50%)}
 .tag{
   position:absolute;left:102.5px;top:852.2px;transform:translate(-50%,-50%);margin:0;
   writing-mode:vertical-rl;font:400 13px/13px var(--serif);white-space:nowrap;
 }
 .strip{display:none}
 
-/* menu: closed it sits in the middle of the spine, open it rises and reveals the links */
+/* index: closed it sits in the middle of the spine notch, open it rises and reveals the links */
 #menu{position:absolute;left:0;top:0;width:1920px;height:0}
 .ml,#mi button{position:absolute;left:60.25px;width:62.9px;text-align:center;font-size:13px;border-bottom:1px solid var(--ink)}
-.ml{top:469px;height:21.1px;line-height:16px;padding-bottom:4.1px;transition:top .6s cubic-bezier(.3,.7,.2,1)}
-#menu.open .ml{top:356.3px}
+.ml{top:497px;height:21.1px;line-height:16px;padding-bottom:4.1px;transition:top .6s cubic-bezier(.3,.7,.2,1)}
+#menu.open .ml{top:423px}
 #mi button{height:18.67px;line-height:13px;padding-bottom:4.67px;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .35s ease,transform .5s cubic-bezier(.3,.7,.2,1)}
-#mi button:nth-child(1){top:451px}
-#mi button:nth-child(2){top:477.34px}
-#mi button:nth-child(3){top:503.68px}
+#mi button:nth-child(1){top:518px}
+#mi button:nth-child(2){top:544.34px}
+#mi button:nth-child(3){top:570.68px}
 #menu.open #mi button{opacity:1;pointer-events:auto;transform:none}
 #menu.open #mi button:nth-child(1){transition-delay:.18s}
 #menu.open #mi button:nth-child(2){transition-delay:.26s}

@@ -201,7 +201,7 @@ rail.addEventListener('scroll',()=>hide(true),{passive:true});
 
 /* menu */
 const menu=$('#menu'),mbtn=$('#mbtn');
-function setMenu(open){menu.classList.toggle('open',open);mbtn.setAttribute('aria-expanded',open);mbtn.textContent=open?'— Menu':'Menu'}
+function setMenu(open){menu.classList.toggle('open',open);mbtn.setAttribute('aria-expanded',open);mbtn.textContent=open?'— Index':'Index'}
 mbtn.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
 
 const PANELS={
@@ -209,7 +209,7 @@ const PANELS={
   team:`<h2>Team</h2><p class="big">Name Surname<br>Name Surname<br>Name Surname</p><p>Placeholder names. Each template credits the creative who made it.</p>`,
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
-PANELS.menu=`<h2>— Menu</h2><div class="mlist">${['info','team','contact'].map(k=>`<button data-panel="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>`;
+PANELS.menu=`<h2>— Index</h2><div class="mlist">${['info','team','contact'].map(k=>`<button data-panel="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>`;
 function closePanel(){panel.hidden=true}
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-panel]');
