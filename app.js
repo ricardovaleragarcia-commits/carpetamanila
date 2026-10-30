@@ -8,7 +8,11 @@ const LABELS=['Resume','Cover Letter','Portfolio','Brand Guidelines','Invoice','
 const COUNTS=[10,8,9,5,7,3];
 /* tab drawing from the Figma (55 x 1028): right line, a soft step, left line, plus a faint left edge above the step.
    The step slides down with the length of the name, keeping the Figma's 48px of air between the name and the step. */
-const tabD=dy=>`M54.5088 0V${171.938+dy}C54.5088 ${179.418+dy} 50.3352 ${186.273+dy} 43.6903 ${189.706+dy}L11.3187 ${206.434+dy}C4.67373 ${209.868+dy} .500132 ${216.722+dy} .500132 ${224.202+dy}V1027.92`;
+const tabD=(dy,s=1)=>{
+  const x=v=>(54.5088-(54.5088-v)*s).toFixed(3);   /* s: 0 = straight line on the hinge, 1 = the real tab shape */
+  return `M${x(54.5088)} 0V${171.938+dy}C${x(54.5088)} ${179.418+dy} ${x(50.3352)} ${186.273+dy} ${x(43.6903)} ${189.706+dy}L${x(11.3187)} ${206.434+dy}C${x(4.67373)} ${209.868+dy} ${x(.500132)} ${216.722+dy} ${x(.500132)} ${224.202+dy}V1027.92`;
+};
+const tabF=(dy,s=1)=>`M${(54.5088-54*s).toFixed(3)} 1V${184.7+dy}`;
 const pad=(n,l=2)=>String(n).padStart(l,'0');
 
 /* blank sheets: real paper sizes (mm), so an A5 reads smaller than an A3 */
@@ -73,8 +77,8 @@ COUNTS.forEach((n,t)=>{
   });
   cs.append(ci);
   const tab=document.createElement('div');tab.className='tab '+k;
-  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path class="tf" d="M.5 1V184.7" stroke="#c9b795"/><path class="tp" d="${tabD(0)}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
-  const fold=document.createElement('div');fold.className='fold';fold.append(cs,tab);col.append(fold);rail.append(col);
+  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path class="tf" d="${tabF(0,0)}" stroke="#c9b795"/><path class="tp" d="${tabD(0,0)}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
+  const fold=document.createElement('div');fold.className='fold';fold.append(cs);col.append(fold,tab);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
 });
 
@@ -82,15 +86,11 @@ function fitTabs(){
   if(matchMedia('(max-width:760px)').matches)return;
   rail.querySelectorAll('.tab').forEach(tab=>{
     const dy=Math.max(0,62+tab.querySelector('.lab').offsetHeight+48-172);
-    tab.querySelector('.tp').setAttribute('d',tabD(dy));
-    tab.querySelector('.tf').setAttribute('d',`M.5 1V${184.7+dy}`);
-    /* the edge line used while a folder is edge-on only spans the real right line: above the step on top tabs, below it on bottom tabs */
-    const len=171.9+dy+8,col=tab.closest('.col');
-    col.style.setProperty('--eh',len+'px');
-    col.style.setProperty('--et',(tab.classList.contains('t')?26.18:1054.1-len)+'px');
+    tab._dy=dy;
+    tab.querySelector('.tp').setAttribute('d',tabD(dy,tab._s??0));
+    tab.querySelector('.tf').setAttribute('d',tabF(dy,tab._s??0));
   });
 }
-document.fonts.ready.then(fitTabs);
 
 /* fit the 1920 x 1080 frame to the window; below 760px switch to the mobile drawer */
 const mq=matchMedia('(max-width:760px)');
@@ -220,12 +220,15 @@ const BASE=[338.5,363.4,388.4,413.4];          /* where each diagonal starts on 
 const FLAP_ID=['info','team','contact'];
 const ftext=[0,1,2].map(i=>$('#spT'+i));
 let shift=[0,0,0,0],goal=[0,0,0,0],openFlap=-1,fraf=0,ft0=0;
-const diag=y=>`M${RX} ${y}C${RX} ${y+7.6} 92.89 ${y+14.54} 86.09 ${y+17.92}L40.65 ${y+40.45}C33.85 ${y+43.83} ${LX} ${y+50.77} ${LX} ${y+DY}`;
+let coverS=0;                                    /* 0 = the cover is a single line on its hinge, 1 = open */
+const X=x=>(RX-(RX-x)*coverS).toFixed(3);
+const diag=y=>`M${X(RX)} ${y}C${X(RX)} ${y+7.6} ${X(92.89)} ${y+14.54} ${X(86.09)} ${y+17.92}L${X(40.65)} ${y+40.45}C${X(33.85)} ${y+43.83} ${X(LX)} ${y+50.77} ${X(LX)} ${y+DY}`;
 function drawFlaps(){
   const d=BASE.map((b,i)=>b+shift[i]);
+  $('#spF').setAttribute('d',`M${X(LX)} 27.19V345.13`);
   $('#spR').setAttribute('d',`M${RX} 25.81V${d[3]}`);
   d.forEach((y,i)=>$('#spD'+i).setAttribute('d',diag(y)));
-  $('#spL').setAttribute('d',`M${LX} ${d[0]+DY}V1055.15`);
+  $('#spL').setAttribute('d',`M${X(LX)} ${d[0]+DY}V1055.15`);
   ftext.forEach((t,k)=>{
     const o=clamp((d[k+1]-d[k]-STRIP)/EXTRA,0,1),cy=(d[k]+d[k+1])/2+27.6;
     t.setAttribute('transform',`translate(63.87 ${cy}) rotate(90)`);
@@ -296,3 +299,39 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closePanel();closeCard();hide(true)}
   else if(panel.hidden&&tilt.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
 });
+
+/* entrance. Each folder is turned in 3D, and its outline is drawn apart as ONE line that begins as a straight line on the hinge and unfolds into the tab shape,
+   so there is never a doubled or blinking line. Progress comes from one easing curve, so lines and turn stay in step. */
+const ease=(()=>{
+  const x1=.45,y1=.05,x2=.2,y2=1,cx=3*x1,bx=3*(x2-x1)-cx,ax=1-cx-bx,cy=3*y1,by=3*(y2-y1)-cy,ay=1-cy-by;
+  const X=t=>((ax*t+bx)*t+cx)*t,Y=t=>((ay*t+by)*t+cy)*t,D=t=>(3*ax*t+2*bx)*t+cx;
+  return x=>{
+    if(x<=0)return 0;if(x>=1)return 1;
+    let t=x;for(let i=0;i<8;i++){const e=X(t)-x,d=D(t);if(Math.abs(e)<1e-5||Math.abs(d)<1e-6)break;t-=e/d}
+    return Y(t);
+  };
+})();
+function runIntro(){
+  const root=document.documentElement;
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches||mq.matches){coverS=1;drawFlaps();root.classList.remove('pre');fitTabs();return}
+  const DUR=1500,tabs=[...rail.querySelectorAll('.tab')].map((tab,k)=>({tab,fold:tab.parentElement.querySelector('.fold'),tp:tab.querySelector('.tp'),tf:tab.querySelector('.tf'),delay:850+k*190})),cover=$('.cover');
+  const t0=performance.now();
+  const frame=now=>{
+    const el=now-t0;let busy=false;
+    for(const f of tabs){
+      const p=ease((el-f.delay)/DUR),th=90*(1-p),s=Math.cos(th*Math.PI/180),dy=f.tab._dy||0;
+      if(p<1)busy=true;
+      f.tab._s=s;
+      f.fold.style.transform=p<1?`perspective(2400px) rotateY(${-th}deg)`:'';
+      f.tp.setAttribute('d',tabD(dy,s));f.tf.setAttribute('d',tabF(dy,s));
+    }
+    const p=ease((el-250)/DUR),th=90*(1-p);
+    if(p<1)busy=true;
+    coverS=Math.cos(th*Math.PI/180);
+    cover.style.transform=p<1?`perspective(2400px) rotateY(${-th}deg)`:'';
+    drawFlaps();
+    if(busy)requestAnimationFrame(frame);
+  };
+  frame(t0);root.classList.remove('pre');requestAnimationFrame(frame);
+}
+Promise.all([document.fonts.load('700 15px "Libre Franklin"'),document.fonts.load('550 11px "Libre Franklin"')]).catch(()=>{}).then(()=>{fitTabs();runIntro()});
