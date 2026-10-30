@@ -215,7 +215,7 @@ document.addEventListener('wheel',e=>{
 rail.addEventListener('scroll',()=>hide(true),{passive:true});
 
 /* spine flaps: three strips behind the logo. At rest they are slim; the one under the pointer opens, and everything below it moves down with it. */
-const RX=97.2,LX=29.54,DY=58.37,EXTRA=72,STRIP=25;
+const RX=97.2,LX=29.54,DY=58.37,EXTRA=100,STRIP=25;
 const BASE=[338.5,363.4,388.4,413.4];          /* where each diagonal starts on the right line, all strips slim */
 const FLAP_ID=['info','team','contact'];
 const ftext=[0,1,2].map(i=>$('#spT'+i));
