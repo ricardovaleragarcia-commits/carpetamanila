@@ -121,15 +121,14 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .mlist{display:grid;gap:4px}
 .mlist button{padding:10px 0;font-size:22px;line-height:26px;text-align:left}
 
-/* entrance: the spine and tabs draw top to bottom, then the entries file in column by column. Nothing blocks input. */
+/* entrance: the spine is drawn, then every folder swings open from its right edge, seen edge-on at first like a line, one after another from left to right. Nothing blocks input. */
 @keyframes draw{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
-@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.spine{animation:draw 1.7s cubic-bezier(.6,.05,.2,1) backwards}
-.ttl{animation:fade 1.1s .8s backwards}
-.tab svg{animation:draw 1.5s var(--d,0s) cubic-bezier(.6,.05,.2,1) backwards}
-.lab{animation:fade .8s calc(var(--d,0ms) + 1s) backwards}
-.item{animation:rise .9s var(--d,0ms) cubic-bezier(.2,.7,.2,1) backwards}
+@keyframes open{from{transform:perspective(2400px) rotateY(89deg)}to{transform:perspective(2400px) rotateY(0deg)}}
+.spine{animation:draw 1.2s cubic-bezier(.6,.05,.2,1) backwards}
+.ttl{animation:fade .8s .5s backwards}
+.col{transform-origin:100% 50%;animation:open 1.15s cubic-bezier(.22,.8,.2,1) var(--cd,0ms) backwards}
+.cs,.lab{animation:fade .6s calc(var(--cd,0ms) + .2s) backwards}   /* only the lines show edge-on; the content fades in as the folder swings open */
 @media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
 
 /* mobile: same drawer, one column at a time; hover becomes tap */

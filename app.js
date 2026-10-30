@@ -61,18 +61,18 @@ const byId=new Map(ITEMS.map(i=>[i.id,i]));
 
 COUNTS.forEach((n,t)=>{
   const col=document.createElement('section'),k=t%2?'t':'b';
-  col.className='col';col.setAttribute('aria-label',LABELS[t]);
+  col.className='col';col.setAttribute('aria-label',LABELS[t]);col.style.setProperty('--cd',(650+t*150)+'ms');
   const cs=document.createElement('div'),ci=document.createElement('div');
   cs.className='cs';ci.className='ci';ci.style.height=Math.max(1080,ROW_Y[0]+ROW_PITCH*(n-1)+ITEM_H+60)+'px';
   ITEMS.filter(i=>i.type===t).forEach((it,v)=>{
     const d=document.createElement('div');
     d.className='item';d.dataset.id=it.id;d.tabIndex=0;d.setAttribute('role','button');
-    d.style.setProperty('--x',ITEM_X+'px');d.style.setProperty('--d',(750+t*120+Math.min(v,6)*75)+'ms');d.style.setProperty('--y',(ROW_Y[0]+ROW_PITCH*v)+'px');
+    d.style.setProperty('--x',ITEM_X+'px');d.style.setProperty('--y',(ROW_Y[0]+ROW_PITCH*v)+'px');
     d.innerHTML=`<span class="n">${pad(v+1)}.</span><span class="t"><span>${it.name}</span><span>${TYPES[t].n}</span><span>By <i>${it.by}</i></span><span>${it.date}</span><span class="go">Retrieve</span></span>`;
     ci.append(d);
   });
   cs.append(ci);
-  const tab=document.createElement('div');tab.className='tab '+k;tab.style.setProperty('--d',(400+t*120)+'ms');
+  const tab=document.createElement('div');tab.className='tab '+k;
   tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path class="tf" d="M.5 1V184.7" stroke="#c9b795"/><path class="tp" d="${tabD(0)}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
   col.append(cs,tab);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
