@@ -49,7 +49,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tab path{vector-effect:non-scaling-stroke}
 .lab{
   position:absolute;left:50%;transform:translateX(-50%);margin:0;
-  writing-mode:vertical-rl;font:400 13px/13px var(--serif);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+  writing-mode:vertical-rl;font:500 13px/13px var(--serif);text-transform:uppercase;white-space:nowrap;
 }
 .tab.t .lab{top:100px}
 .tab.b .lab{top:818px}
