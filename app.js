@@ -68,12 +68,12 @@ COUNTS.forEach((n,t)=>{
   ITEMS.filter(i=>i.type===t).forEach((it,v)=>{
     const d=document.createElement('div');
     d.className='item';d.dataset.id=it.id;d.tabIndex=0;d.setAttribute('role','button');
-    d.style.setProperty('--x',ITEM_X+'px');d.style.setProperty('--y',(ROW_Y[0]+ROW_PITCH*v)+'px');
+    d.style.setProperty('--x',ITEM_X+'px');d.style.setProperty('--d',(450+t*70+Math.min(v,6)*45)+'ms');d.style.setProperty('--y',(ROW_Y[0]+ROW_PITCH*v)+'px');
     d.innerHTML=`<span class="n">${pad(v+1)}.</span><span class="t"><span>${it.name}</span><span>${TYPES[t].n}</span><span>By <i>${it.by}</i></span><span>${it.date}</span><span class="go">Retrieve</span></span>`;
     ci.append(d);
   });
   cs.append(ci);
-  const tab=document.createElement('div');tab.className='tab '+k;
+  const tab=document.createElement('div');tab.className='tab '+k;tab.style.setProperty('--d',(250+t*70)+'ms');
   tab.innerHTML=`<svg viewBox="0 0 54 1000" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="${TAB[k]}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
   col.append(cs,tab);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
@@ -106,11 +106,11 @@ function hide(now){
   const go=()=>sheet.classList.remove('on');
   now?go():hideT=setTimeout(go,90);
 }
-rail.addEventListener('pointerover',e=>{
+stage.addEventListener('pointerover',e=>{
   if(e.pointerType==='touch'||mq.matches)return;
-  const it=e.target.closest('.item');it?show(it):hide();
+  const it=e.target.closest('.item');it?show(it):hide(true);   /* off the instant the pointer leaves the text, anywhere on the stage */
 });
-stage.addEventListener('pointerleave',()=>hide());
+stage.addEventListener('pointerleave',()=>hide(true));
 rail.addEventListener('focusin',e=>{const it=e.target.closest('.item');if(it)show(it)});
 rail.addEventListener('focusout',()=>hide());
 
@@ -178,13 +178,13 @@ function Scroller(el,ax,max,over,snap){
 const cols=[...rail.children];
 const colW=()=>rail.firstElementChild.offsetWidth;
 const maxLeft=()=>rail.scrollWidth-rail.clientWidth;
-const railS=Scroller(rail,'x',maxLeft,v=>cols.forEach(c=>{c.style.transform=v?`translateX(${-v}px)`:''}),v=>Math.round(v/colW())*colW());
+const railS=Scroller(rail,'x',maxLeft,v=>cols.forEach(c=>{c.style.transform=v?`translateX(${-v}px)`:''}),v=>{const w=colW(),m=maxLeft(),r=Math.round(v/w)*w;return Math.abs(m-v)<Math.abs(r-v)?m:r});
 cols.forEach(col=>{
   const cs=col.querySelector('.cs'),ci=col.querySelector('.ci');
   cs._s=Scroller(cs,'y',()=>cs.scrollHeight-cs.clientHeight,v=>{ci.style.transform=v?`translateY(${-v}px)`:''});
 });
 function goTo(i){railS.to(i*colW())}
-function step(dir){goTo(Math.round(railS.at()/colW())+dir)}
+function step(dir){const q=railS.at()/colW();goTo(dir>0?Math.floor(q+.01)+1:Math.ceil(q-.01)-1)}
 let axis='',lastW=0;
 document.addEventListener('wheel',e=>{
   if(mq.matches||e.target.closest('.panel,.card'))return;
@@ -205,16 +205,13 @@ function setMenu(open){menu.classList.toggle('open',open);mbtn.setAttribute('ari
 mbtn.addEventListener('click',()=>setMenu(!menu.classList.contains('open')));
 
 const PANELS={
-  index:`<h2>Index</h2><ul class="ix">${LABELS.map((l,i)=>`<li><button data-go="${i}"><span class="no">No. ${pad(i+1)}</span><span class="nm">${l}</span><span class="ld"></span><span class="ct">${COUNTS[i]}</span></button></li>`).join('')}</ul>`,
   info:`<h2>Info</h2><p class="big">Carpeta Manila is a growing collection of open access templates and resources.</p><p>Every template is original, free to download and made with working designers, art directors and studios. Resumes, portfolios, cover letters, brand guidelines, invoices and more, each one filed in the software you work in.</p><p class="small">Formats: Figma, Canva, InDesign, Word, Pages, Google Docs, Keynote.</p>`,
   team:`<h2>Team</h2><p class="big">Name Surname<br>Name Surname<br>Name Surname</p><p>Placeholder names. Each template credits the creative who made it.</p>`,
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
-PANELS.menu=`<h2>— Menu</h2><div class="mlist">${['index','info','team','contact'].map(k=>`<button data-panel="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>`;
+PANELS.menu=`<h2>— Menu</h2><div class="mlist">${['info','team','contact'].map(k=>`<button data-panel="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>`;
 function closePanel(){panel.hidden=true}
 document.addEventListener('click',e=>{
-  const g=e.target.closest('[data-go]');
-  if(g){goTo(+g.dataset.go);closePanel();setMenu(false);return}
   const b=e.target.closest('[data-panel]');
   if(b){hide(true);closeCard();panel.innerHTML=PANELS[b.dataset.panel];panel.hidden=false;return}
   if(!panel.hidden&&!panel.contains(e.target))closePanel();
