@@ -1,8 +1,8 @@
-/* Clarendon Text Pro (text) and Clarendon Wide (logo): commercial faces. They load from the visitor's machine or from fonts/ once licensed web files are added there; Bitter is the stand-in meanwhile. */
-@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:normal;font-display:swap;src:local('Clarendon Text Pro'),local('ClarendonTextPro-Regular'),url(fonts/ClarendonTextPro-Regular.woff2) format('woff2')}
-@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:italic;font-display:swap;src:local('Clarendon Text Pro Italic'),local('ClarendonTextPro-Italic'),url(fonts/ClarendonTextPro-Italic.woff2) format('woff2')}
-@font-face{font-family:'Clarendon Text Pro';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Text Pro Bold'),local('ClarendonTextPro-Bold'),url(fonts/ClarendonTextPro-Bold.woff2) format('woff2')}
-@font-face{font-family:'Clarendon Wide';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Wide Bold'),local('ClarendonWide-Bold'),url(fonts/ClarendonWide-Bold.woff2) format('woff2')}
+/* Clarendon Text Pro (text) and Clarendon Wide (logo): commercial faces. They are Adobe Fonts (Canada Type): they show where the font is active, and Bitter stands in elsewhere until an Adobe Fonts web project is linked. */
+@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:normal;font-display:swap;src:local('Clarendon Text Pro'),local('ClarendonTextPro-Regular')}
+@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:italic;font-display:swap;src:local('Clarendon Text Pro Italic'),local('ClarendonTextPro-Italic')}
+@font-face{font-family:'Clarendon Text Pro';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Text Pro Bold'),local('ClarendonTextPro-Bold')}
+@font-face{font-family:'Clarendon Wide';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Wide Bold'),local('ClarendonWide-Bold')}
 
 /* Desktop - 4 (Figma, 1920 x 1080): a horizontal filing drawer. Spine fixed on the left, one folder column per category, tabs staggered top / bottom. */
 :root{

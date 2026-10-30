@@ -91,12 +91,13 @@ function fitStage(){
 addEventListener('resize',fitStage);fitStage();
 
 /* hover sheet: a blank white sheet in the item's format; pointer-events none, so the next entry stays reachable underneath */
-const BOX_W=619.79,BOX_H=806.08,PX_MM=BOX_H/297;
+/* every sheet shares one height (the Figma rectangle); only very wide formats are capped so they stay inside the page */
+const SHEET_H=806.08,SHEET_MAXW=1100;
 let hideT=0;
 function show(el){
   if(!card.hidden||mq.matches)return;
   clearTimeout(hideT);
-  const {w,h}=dims(byId.get(+el.dataset.id).f),k=Math.min(PX_MM,BOX_W/w,BOX_H/h);
+  const {w,h}=dims(byId.get(+el.dataset.id).f),k=Math.min(SHEET_H/h,SHEET_MAXW/w);
   blank.style.width=w*k+'px';blank.style.height=h*k+'px';
   sheet.classList.add('on');
 }
@@ -137,12 +138,54 @@ card.addEventListener('click',e=>{
   else if(e.target.closest('[data-sw]')){const s=$('#stamp');s.hidden=false;s.style.animation='none';void s.offsetWidth;s.style.animation=''}
 });
 
-/* gestures: a trackpad swipe is horizontal or vertical, never both. Horizontal moves the drawer, vertical scrolls the column under the pointer. */
+/* gestures: a trackpad swipe is horizontal or vertical, never both. Horizontal moves the drawer, vertical scrolls the column under the pointer.
+   Movement is weighted: the position eases toward its target, the drawer settles on a column, and the ends pull back like a spring. */
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function Scroller(el,ax,max,over,snap){
+  const get=()=>ax==='x'?el.scrollLeft:el.scrollTop,put=v=>{ax==='x'?el.scrollLeft=v:el.scrollTop=v};
+  const RUB=70;
+  let pos=0,tg=0,raf=0,t0=0,idle=0,k=11;
+  function frame(t){
+    const dt=Math.min(.05,(t-t0)/1000||.016),m=max();t0=t;
+    pos+=(tg-pos)*(1-Math.exp(-dt*k));
+    if(Math.abs(tg-pos)<.25)pos=tg;
+    const c=clamp(pos,0,m);put(c);over(pos-c);
+    raf=pos===tg?0:requestAnimationFrame(frame);
+  }
+  const run=()=>{if(!raf){t0=performance.now();raf=requestAnimationFrame(frame)}};
+  function release(){
+    const m=max();tg=clamp(tg,0,m);if(snap)tg=clamp(snap(tg),0,m);
+    k=7;run();
+  }
+  return{
+    at:()=>raf?tg:get(),
+    push(d){
+      const m=max();if(m<=0)return;
+      if(!raf){pos=tg=get()}
+      k=11;
+      let rem=d;
+      if(tg>=0&&tg<=m){const room=d>0?m-tg:-tg;if(Math.abs(d)<=Math.abs(room)){tg+=d;rem=0}else{tg+=room;rem=d-room}}
+      if(rem){
+        const o=tg<0?tg:tg>m?tg-m:0,dir=Math.sign(rem);
+        if(o===0||Math.sign(o)===dir)tg=(dir>0?m:0)+clamp(o+rem*Math.max(0,1-Math.abs(o)/RUB)*.35,-RUB,RUB);
+        else tg+=rem;
+      }
+      run();clearTimeout(idle);idle=setTimeout(release,130);
+    },
+    to(v){const m=max();if(!raf)pos=get();tg=clamp(v,0,m);k=7;run()}
+  };
+}
+const cols=[...rail.children];
 const colW=()=>rail.firstElementChild.offsetWidth;
 const maxLeft=()=>rail.scrollWidth-rail.clientWidth;
-function goTo(i){rail.scrollTo({left:Math.max(0,Math.min(maxLeft(),i*colW())),behavior:'smooth'})}
-function step(dir){goTo(Math.round(rail.scrollLeft/colW())+dir)}
-let axis='',lastW=0,snapT=0;
+const railS=Scroller(rail,'x',maxLeft,v=>cols.forEach(c=>{c.style.transform=v?`translateX(${-v}px)`:''}),v=>Math.round(v/colW())*colW());
+cols.forEach(col=>{
+  const cs=col.querySelector('.cs'),ci=col.querySelector('.ci');
+  cs._s=Scroller(cs,'y',()=>cs.scrollHeight-cs.clientHeight,v=>{ci.style.transform=v?`translateY(${-v}px)`:''});
+});
+function goTo(i){railS.to(i*colW())}
+function step(dir){goTo(Math.round(railS.at()/colW())+dir)}
+let axis='',lastW=0;
 document.addEventListener('wheel',e=>{
   if(mq.matches||e.target.closest('.panel,.card'))return;
   e.preventDefault();               /* also stops the browser's swipe-back past the logo */
@@ -151,13 +194,8 @@ document.addEventListener('wheel',e=>{
   if(e.shiftKey&&!dx){dx=dy;dy=0}
   if(!axis||e.timeStamp-lastW>160)axis=Math.abs(dx)>Math.abs(dy)?'x':'y';
   lastW=e.timeStamp;hide(true);
-  if(axis==='x'){
-    rail.scrollLeft=Math.max(0,Math.min(maxLeft(),rail.scrollLeft+dx));
-    clearTimeout(snapT);snapT=setTimeout(()=>goTo(Math.round(rail.scrollLeft/colW())),140);
-  }else{
-    const col=e.target.closest('.col'),cs=col&&col.querySelector('.cs');
-    if(cs)cs.scrollTop+=dy;
-  }
+  if(axis==='x')railS.push(dx);
+  else{const col=e.target.closest('.col'),cs=col&&col.querySelector('.cs');if(cs)cs._s.push(dy)}
 },{passive:false});
 rail.addEventListener('scroll',()=>hide(true),{passive:true});
 
