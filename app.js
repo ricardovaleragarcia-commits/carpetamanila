@@ -1,6 +1,6 @@
 /* Collection: one folder column per category (Desktop - 4), scrolling sideways like a filing drawer. */
 const $=s=>document.querySelector(s);
-const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card'),tilt=$('#tilt'),tcard=$('#tcard');
+const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card'),tilt=$('#tilt'),tcard=$('#tcard'),ntag=$('#ntag');
 
 const ROW_Y=[39.87,191.58,343.30,495.01,646.72,798.43,950.15];
 const ROW_PITCH=151.71,ITEM_H=65,ITEM_X=40.75;
@@ -281,7 +281,7 @@ function fadeClose(el){
   el._t=setTimeout(()=>{el.hidden=true;el.classList.remove('out');el.classList.remove('back')},320);
 }
 function showBlock(el){clearTimeout(el._t);el.classList.remove('out');el.hidden=false}
-function closePanel(){panel.hidden=true;fadeClose(tilt);fadeClose(tcard)}
+function closePanel(){panel.hidden=true;fadeClose(tilt);fadeClose(tcard);fadeClose(ntag)}
 function openPanel(name){
   hide(true);closeCard();
   if(name==='info'){
@@ -293,18 +293,18 @@ function openPanel(name){
     tilt.style.setProperty('--k',(room/need).toFixed(4));
   }
   if(name==='contact'&&!mq.matches)showBlock(tcard);   /* the grey card now belongs to Contact; its content is a placeholder until the contact data arrives */
-  /* Team: nothing to show yet */
+  if(name==='team'&&!mq.matches)showBlock(ntag);
 }
 document.addEventListener('click',e=>{
   if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
   const b=e.target.closest('[data-panel]');
   if(b){openPanel(b.dataset.panel);return}
-  if((!panel.hidden||!tilt.hidden||!tcard.hidden)&&!panel.contains(e.target)&&!tcard.contains(e.target))closePanel();
+  if((!panel.hidden||!tilt.hidden||!tcard.hidden||!ntag.hidden)&&!panel.contains(e.target)&&!tcard.contains(e.target))closePanel();
   if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item'))closeCard();
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closePanel();closeCard();hide(true)}
-  else if(panel.hidden&&tilt.hidden&&tcard.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
+  else if(panel.hidden&&tilt.hidden&&tcard.hidden&&ntag.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
 });
 
 /* entrance. Each folder is turned in 3D, and its outline is drawn apart as ONE line that begins as a straight line on the hinge and unfolds into the tab shape,
@@ -344,4 +344,4 @@ function runIntro(){
 Promise.all([document.fonts.load('700 15px "Libre Franklin"'),document.fonts.load('550 11px "Libre Franklin"')]).catch(()=>{}).then(()=>{fitTabs();runIntro()});
 
 /* the card turns over on click */
-tcard.addEventListener('click',()=>tcard.classList.toggle('back'));
+tcard.addEventListener('click',e=>{if(e.target.closest('a'))return;tcard.classList.toggle('back')});
