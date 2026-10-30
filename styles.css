@@ -56,10 +56,9 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* spine (the cover of the drawer, twice as wide as a tab) */
 .spine{position:absolute;left:37.2px;top:30.92px;color:var(--ink)}
-.ttl{
-  position:absolute;left:107.5px;top:163.4px;transform:translate(-50%,-50%);margin:0;
-  writing-mode:vertical-rl;font:800 20px/20px var(--wide);letter-spacing:.07em;text-transform:uppercase;opacity:.8;white-space:nowrap;
-}
+.ttl,.mt{margin:0;width:calc(var(--L)*.04652);height:var(--L)}
+.ttl img,.mt img{position:absolute;left:50%;top:50%;display:block;width:var(--L);height:calc(var(--L)*.04652);max-width:none;transform:translate(-50%,-50%) rotate(90deg)}
+.ttl{--L:247px;position:absolute;left:107.5px;top:163.4px;transform:translate(-50%,-50%)}
 .tag{
   position:absolute;left:102.5px;top:852.2px;transform:translate(-50%,-50%);margin:0;
   writing-mode:vertical-rl;font:400 13px/13px var(--serif);white-space:nowrap;
@@ -128,9 +127,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 @keyframes draw{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes fadeTtl{from{opacity:0}to{opacity:.8}}
 .spine{animation:draw 1.7s cubic-bezier(.6,.05,.2,1) backwards}
-.ttl{animation:fadeTtl 1.1s .8s backwards}
+.ttl{animation:fade 1.1s .8s backwards}
 .tag{animation:fade 1.1s 1.2s backwards}
 #menu{animation:fade .9s 1.9s backwards}
 .tab svg{animation:draw 1.5s var(--d,0s) cubic-bezier(.6,.05,.2,1) backwards}
@@ -142,7 +140,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
 .m .spine,.m .ttl,.m .tag,.m #menu{display:none}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
-.m .mt{position:absolute;left:50%;top:20px;transform:translateX(-50%);margin:0;writing-mode:vertical-rl;font:800 16px/16px var(--wide);letter-spacing:.07em;text-transform:uppercase;opacity:.8;white-space:nowrap}
+.m .mt{--L:190px;position:absolute;left:50%;top:20px;transform:translateX(-50%)}
 .m #mmb{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);writing-mode:vertical-rl;font-size:13px;line-height:13px;padding:0 0 0 4px;border-left:1px solid var(--ink)}
 .m #rail{left:46px;width:calc(100vw - 46px);height:100%}
 .m .col{width:calc(100vw - 46px);height:100%}
