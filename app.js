@@ -292,8 +292,8 @@ function openPanel(name){
     const need=Math.max(...[...tilt.children].map(p=>p.offsetWidth)),room=tilt.clientWidth-32;
     tilt.style.setProperty('--k',(room/need).toFixed(4));
   }
-  if(name==='team'&&!mq.matches)showBlock(tcard);
-  /* Contact: nothing to show yet */
+  if(name==='contact'&&!mq.matches)showBlock(tcard);   /* the grey card now belongs to Contact; its content is a placeholder until the contact data arrives */
+  /* Team: nothing to show yet */
 }
 document.addEventListener('click',e=>{
   if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
