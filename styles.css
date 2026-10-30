@@ -1,15 +1,13 @@
-/* Clarendon Text Pro (text) and Clarendon Wide (logo): commercial faces. They are Adobe Fonts (Canada Type): they show where the font is active, and Bitter stands in elsewhere until an Adobe Fonts web project is linked. */
-@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:normal;font-display:swap;src:local('Clarendon Text Pro'),local('ClarendonTextPro-Regular')}
-@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:italic;font-display:swap;src:local('Clarendon Text Pro Italic'),local('ClarendonTextPro-Italic')}
-@font-face{font-family:'Clarendon Text Pro';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Text Pro Bold'),local('ClarendonTextPro-Bold')}
-@font-face{font-family:'Clarendon Wide';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Wide Bold'),local('ClarendonWide-Bold')}
+/* Besley (SIL OFL, Indestructible Type): a Clarendon-genre face, self-hosted. It stands in for Clarendon Text Pro (text) and, at weight 800 with open spacing, for Clarendon Wide Bold (logo). */
+@font-face{font-family:'Besley';font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/Besley-latin.woff2) format('woff2')}
+@font-face{font-family:'Besley';font-style:italic;font-weight:400 900;font-display:swap;src:url(fonts/Besley-Italic-latin.woff2) format('woff2')}
 
 /* Desktop - 4 (Figma, 1920 x 1080): a horizontal filing drawer. Spine fixed on the left, one folder column per category, tabs staggered top / bottom. */
 :root{
   --paper:#f4e2c1;
   --ink:#000;
-  --serif:'Clarendon Text Pro','Clarendon',Bitter,Georgia,'Times New Roman',serif;
-  --wide:'Clarendon Wide','Clarendon Text Pro','Clarendon',Bitter,Georgia,serif;
+  --serif:'Besley',Georgia,'Times New Roman',serif;
+  --wide:'Besley',Georgia,serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -50,8 +48,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tab svg{display:block;width:100%;height:100%;overflow:visible}
 .tab path{vector-effect:non-scaling-stroke}
 .lab{
-  position:absolute;left:32.5px;margin:0;
-  writing-mode:vertical-rl;font:400 14px/14px var(--serif);letter-spacing:.06em;white-space:nowrap;
+  position:absolute;left:50%;transform:translateX(-50%);margin:0;
+  writing-mode:vertical-rl;font:400 13px/13px var(--serif);letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
 }
 .tab.t .lab{top:100px}
 .tab.b .lab{top:818px}
@@ -60,7 +58,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .spine{position:absolute;left:37.2px;top:30.92px;color:var(--ink)}
 .ttl{
   position:absolute;left:107.5px;top:163.4px;transform:translate(-50%,-50%);margin:0;
-  writing-mode:vertical-rl;font:700 20px/20px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap;
+  writing-mode:vertical-rl;font:800 20px/20px var(--wide);letter-spacing:.07em;text-transform:uppercase;opacity:.8;white-space:nowrap;
 }
 .tag{
   position:absolute;left:102.5px;top:852.2px;transform:translate(-50%,-50%);margin:0;
@@ -144,7 +142,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
 .m .spine,.m .ttl,.m .tag,.m #menu{display:none}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
-.m .mt{position:absolute;left:50%;top:20px;transform:translateX(-50%);margin:0;writing-mode:vertical-rl;font:700 16px/16px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap}
+.m .mt{position:absolute;left:50%;top:20px;transform:translateX(-50%);margin:0;writing-mode:vertical-rl;font:800 16px/16px var(--wide);letter-spacing:.07em;text-transform:uppercase;opacity:.8;white-space:nowrap}
 .m #mmb{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);writing-mode:vertical-rl;font-size:13px;line-height:13px;padding:0 0 0 4px;border-left:1px solid var(--ink)}
 .m #rail{left:46px;width:calc(100vw - 46px);height:100%}
 .m .col{width:calc(100vw - 46px);height:100%}
@@ -152,7 +150,6 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .m .ci{width:100%;padding:26px 20px 60px}
 .m .item{position:relative;left:auto;top:auto;margin:0 0 30px;pointer-events:auto}
 .m .tab{left:auto;right:0;top:12px;bottom:12px;width:30px;height:auto}
-.m .lab{left:50%;transform:translateX(-50%)}
 .m .tab.t .lab{top:14%}
 .m .tab.b .lab{top:auto;bottom:10%}
 
