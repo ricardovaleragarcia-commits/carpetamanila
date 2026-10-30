@@ -61,7 +61,7 @@ const byId=new Map(ITEMS.map(i=>[i.id,i]));
 
 COUNTS.forEach((n,t)=>{
   const col=document.createElement('section'),k=t%2?'t':'b';
-  col.className='col';col.setAttribute('aria-label',LABELS[t]);col.style.setProperty('--cd',(650+t*150)+'ms');
+  col.className='col';col.setAttribute('aria-label',LABELS[t]);col.style.setProperty('--cd',(850+t*190)+'ms');
   const cs=document.createElement('div'),ci=document.createElement('div');
   cs.className='cs';ci.className='ci';ci.style.height=Math.max(1080,ROW_Y[0]+ROW_PITCH*(n-1)+ITEM_H+60)+'px';
   ITEMS.filter(i=>i.type===t).forEach((it,v)=>{
@@ -74,7 +74,7 @@ COUNTS.forEach((n,t)=>{
   cs.append(ci);
   const tab=document.createElement('div');tab.className='tab '+k;
   tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path class="tf" d="M.5 1V184.7" stroke="#c9b795"/><path class="tp" d="${tabD(0)}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
-  col.append(cs,tab);rail.append(col);
+  const fold=document.createElement('div');fold.className='fold';fold.append(cs,tab);col.append(fold);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
 });
 

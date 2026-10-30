@@ -121,19 +121,23 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .mlist{display:grid;gap:4px}
 .mlist button{padding:10px 0;font-size:22px;line-height:26px;text-align:left}
 
-/* entrance: the spine is drawn, then every folder swings open from its right edge, seen edge-on at first like a line, one after another from left to right. Nothing blocks input. */
-@keyframes draw{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+/* entrance: every folder, the cover included, swings open from its right edge. It starts edge-on, as a line, with its free side behind the screen, and comes forward to lie flat. Cover first, then the folders from left to right. Nothing blocks input. */
 @keyframes fade{from{opacity:0}to{opacity:1}}
-@keyframes open{from{transform:perspective(2400px) rotateY(89deg)}to{transform:perspective(2400px) rotateY(0deg)}}
-.spine{animation:draw 1.2s cubic-bezier(.6,.05,.2,1) backwards}
-.ttl{animation:fade .8s .5s backwards}
-.col{transform-origin:100% 50%;animation:open 1.15s cubic-bezier(.22,.8,.2,1) var(--cd,0ms) backwards}
-.cs,.lab{animation:fade .6s calc(var(--cd,0ms) + .2s) backwards}   /* only the lines show edge-on; the content fades in as the folder swings open */
-@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
+@keyframes open{from{transform:perspective(2400px) rotateY(-89deg)}to{transform:perspective(2400px) rotateY(0deg)}}
+.cover{position:absolute;left:0;top:0;width:140px;height:1080px;pointer-events:none;transform-origin:97.2px 50%;animation:open 1.5s cubic-bezier(.45,.05,.2,1) 250ms backwards}
+.cover .ttl{animation:fade .9s 1s backwards}
+.fold{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:100% 50%;animation:open 1.5s cubic-bezier(.45,.05,.2,1) var(--cd,0ms) backwards}
+/* a flat plane is invisible edge-on, so the edge of each sheet is drawn apart from the turning part and fades once the sheet is open */
+@keyframes edge{0%,45%{opacity:1}100%{opacity:0}}
+.col::after,.cedge{content:'';position:absolute;width:1px;background:var(--ink);pointer-events:none;animation:edge 1.5s linear var(--cd,0ms) both}
+.col::after{left:328px;top:26.18px;height:1027.92px}
+.cedge{left:97px;top:25.81px;height:1029.3px;--cd:250ms}
+.cs,.lab{animation:fade .8s calc(var(--cd,0ms) + .45s) backwards}   /* only the lines show edge-on; the content fades in as the folder comes forward */
+@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}.col::after,.cedge{display:none}}
 
 /* mobile: same drawer, one column at a time; hover becomes tap */
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
-.m .spine,.m .ttl,.m .flaps,.m .tilt{display:none}
+.m .spine,.m .ttl,.m .flaps,.m .tilt,.m .cedge,.m .col::after{display:none}
 .m .tab path{vector-effect:non-scaling-stroke}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
 .m .mt{--L:190px;position:absolute;left:50%;top:20px;transform:translateX(-50%)}
