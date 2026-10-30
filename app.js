@@ -261,13 +261,19 @@ const PANELS={
   team:`<h2>Team</h2><p class="big">Name Surname<br>Name Surname<br>Name Surname</p><p>Placeholder names. Each template credits the creative who made it.</p>`,
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
-function closePanel(){panel.hidden=true;tilt.hidden=true}
+let tiltT=0;
+function closeTilt(){
+  if(tilt.hidden||tilt.classList.contains('out'))return;
+  tilt.classList.add('out');
+  tiltT=setTimeout(()=>{tilt.hidden=true;tilt.classList.remove('out')},320);
+}
+function closePanel(){panel.hidden=true;closeTilt()}
 /* the three flaps open their blocks on click. They stack on screen and stay until a click lands outside. Only Info has a design so far. */
 function openPanel(name){
   hide(true);closeCard();
   if(name==='info'){
     if(mq.matches){tilt.hidden=true;panel.innerHTML=PANELS.info;panel.hidden=false;return}
-    tilt.hidden=false;
+    clearTimeout(tiltT);tilt.classList.remove('out');tilt.hidden=false;
     /* the strip is as long as in the Figma: scale the three lines so the longest one fills it like the design does */
     tilt.style.setProperty('--k',1);
     const need=Math.max(...[...tilt.children].map(p=>p.offsetWidth)),room=tilt.clientWidth-32;

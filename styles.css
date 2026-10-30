@@ -85,6 +85,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tilt{position:absolute;left:960px;top:540px;pointer-events:none;width:1758.72px;height:82.06px;transform:translate(-50%,-50%) rotate(-24.24deg);background:#fff;z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 16px;color:#000;text-transform:uppercase;white-space:nowrap}
 .tilt[hidden]{display:none}
 .tilt:not([hidden]){animation:fade .35s ease}
+.tilt.out{animation:fadeOut .3s ease forwards}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 .tilt p{margin:0;width:max-content;font:400 calc(13px*var(--k,1))/20px var(--sans)}
 .tilt .h{font-weight:550;font-size:calc(16px*var(--k,1))}
 .tilt .f{color:#7e7e7e}
