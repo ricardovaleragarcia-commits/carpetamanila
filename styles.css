@@ -49,9 +49,9 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tab path{stroke-width:1}
 .lab{
   position:absolute;left:27.5px;transform:translateX(-50%);margin:0;
-  writing-mode:vertical-rl;font:700 15px/16px var(--sans);text-transform:uppercase;white-space:pre-line;text-align:center;
+  writing-mode:vertical-rl;font:700 15px/16px var(--sans);text-transform:uppercase;white-space:nowrap;
 }
-.tab.t .lab{top:34px}
+.tab.t .lab{top:62px}
 .tab.b .lab{bottom:62px}
 
 /* spine: the cover of the drawer. Three flaps sit behind it; hovering one opens it to show its name. */

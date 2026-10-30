@@ -6,8 +6,9 @@ const ROW_Y=[39.87,191.58,343.30,495.01,646.72,798.43,950.15];
 const ROW_PITCH=151.71,ITEM_H=65,ITEM_X=40.75;
 const LABELS=['Resume','Cover Letter','Portfolio','Brand Guidelines','Invoice','Proposal'];
 const COUNTS=[10,8,9,5,7,3];
-/* tab drawing from the Figma (55 x 1028): right line, a soft step, left line, plus a faint left edge above the step */
-const TAB_D='M54.5088 0V171.938C54.5088 179.418 50.3352 186.273 43.6903 189.706L11.3187 206.434C4.67373 209.868 .500132 216.722 .500132 224.202V324.441L.5 469.92L.500132 514.771L.5 594.486V1027.92';
+/* tab drawing from the Figma (55 x 1028): right line, a soft step, left line, plus a faint left edge above the step.
+   The step slides down with the length of the name, keeping the Figma's 48px of air between the name and the step. */
+const tabD=dy=>`M54.5088 0V${171.938+dy}C54.5088 ${179.418+dy} 50.3352 ${186.273+dy} 43.6903 ${189.706+dy}L11.3187 ${206.434+dy}C4.67373 ${209.868+dy} .500132 ${216.722+dy} .500132 ${224.202+dy}V1027.92`;
 const pad=(n,l=2)=>String(n).padStart(l,'0');
 
 /* blank sheets: real paper sizes (mm), so an A5 reads smaller than an A3 */
@@ -72,10 +73,20 @@ COUNTS.forEach((n,t)=>{
   });
   cs.append(ci);
   const tab=document.createElement('div');tab.className='tab '+k;tab.style.setProperty('--d',(400+t*120)+'ms');
-  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M.5 1V184.7" stroke="#c9b795"/><path d="${TAB_D}" stroke="currentColor"/></svg><p class="lab">${LABELS[t].replace(' Guidelines','\nGuidelines')}</p>`;
+  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path class="tf" d="M.5 1V184.7" stroke="#c9b795"/><path class="tp" d="${tabD(0)}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
   col.append(cs,tab);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
 });
+
+function fitTabs(){
+  if(matchMedia('(max-width:760px)').matches)return;
+  rail.querySelectorAll('.tab').forEach(tab=>{
+    const dy=Math.max(0,62+tab.querySelector('.lab').offsetHeight+48-172);
+    tab.querySelector('.tp').setAttribute('d',tabD(dy));
+    tab.querySelector('.tf').setAttribute('d',`M.5 1V${184.7+dy}`);
+  });
+}
+document.fonts.ready.then(fitTabs);
 
 /* fit the 1920 x 1080 frame to the window; below 760px switch to the mobile drawer */
 const mq=matchMedia('(max-width:760px)');
