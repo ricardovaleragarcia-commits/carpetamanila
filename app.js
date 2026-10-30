@@ -3,7 +3,7 @@ const $=s=>document.querySelector(s);
 const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card');
 
 const ROW_Y=[39.87,191.58,343.30,495.01,646.72,798.43,950.15];
-const ROW_PITCH=151.71,ITEM_H=60,ITEM_X=40.75;
+const ROW_PITCH=151.71,ITEM_H=65,ITEM_X=40.75;
 const LABELS=['Resume','Cover Letter','Portfolio','Brand Guidelines','Invoice','Proposal'];
 const COUNTS=[10,8,9,5,7,3];
 /* tab drawing from the Figma (55 x 1028): right line, a soft step, left line, plus a faint left edge above the step */
@@ -72,7 +72,7 @@ COUNTS.forEach((n,t)=>{
   });
   cs.append(ci);
   const tab=document.createElement('div');tab.className='tab '+k;tab.style.setProperty('--d',(400+t*120)+'ms');
-  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M.5 1V184.7" stroke="#c9b795"/><path d="${TAB_D}" stroke="currentColor"/></svg><p class="lab">${LABELS[t]}</p>`;
+  tab.innerHTML=`<svg viewBox="0 0 55.0088 1027.92" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M.5 1V184.7" stroke="#c9b795"/><path d="${TAB_D}" stroke="currentColor"/></svg><p class="lab">${LABELS[t].replace(' Guidelines','\nGuidelines')}</p>`;
   col.append(cs,tab);rail.append(col);
   cs.addEventListener('scroll',()=>hide(true),{passive:true});
 });
@@ -89,8 +89,8 @@ function fitStage(){
 addEventListener('resize',fitStage);fitStage();
 
 /* hover sheet: a blank white sheet in the item's format; pointer-events none, so the next entry stays reachable underneath */
-/* every sheet shares one tall height (about 87% of the frame); only very wide formats are capped so they stay inside the page */
-const SHEET_H=940,SHEET_MAXW=1400;
+/* every sheet shares one tall height (about 96% of the frame); only very wide formats are capped so they stay inside the page */
+const SHEET_H=1040,SHEET_MAXW=1760;
 let hideT=0;
 function show(el){
   if(!card.hidden||mq.matches)return;
@@ -212,8 +212,8 @@ function drawFlaps(){
   d.forEach((y,i)=>$('#spD'+i).setAttribute('d',diag(y)));
   $('#spL').setAttribute('d',`M${LX} ${d[0]+DY}V1055.15`);
   ftext.forEach((t,k)=>{
-    const o=clamp((d[k+1]-d[k]-STRIP)/EXTRA,0,1),cy=(d[k]+d[k+1])/2+20.9;
-    t.setAttribute('transform',`translate(79.9 ${cy}) rotate(90)`);
+    const o=clamp((d[k+1]-d[k]-STRIP)/EXTRA,0,1),cy=(d[k]+d[k+1])/2+27.6;
+    t.setAttribute('transform',`translate(63.87 ${cy}) rotate(90)`);
     t.style.opacity=clamp((o-.4)/.6,0,1);
   });
 }

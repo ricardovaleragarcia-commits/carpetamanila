@@ -37,8 +37,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* only the glyphs react: the box itself is inert, each line is as wide as its text */
 .item{pointer-events:none}
 .item .t>span{pointer-events:auto;cursor:pointer;width:max-content}
-.item .n{pointer-events:auto;cursor:pointer;align-self:start;height:12px;font:700 10px/12px var(--sans)}
-.item .t{display:block;white-space:nowrap;font:550 10px/12px var(--sans);text-transform:uppercase}
+.item .n{pointer-events:auto;cursor:pointer;align-self:start;height:13px;font:700 11px/13px var(--sans)}
+.item .t{display:block;white-space:nowrap;font:550 11px/13px var(--sans);text-transform:uppercase}
 .item .t>span{display:block}
 .item i{font-style:normal}
 
@@ -48,20 +48,20 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tab.b svg{transform:scaleY(-1)}
 .tab path{stroke-width:1}
 .lab{
-  position:absolute;left:37.5px;transform:translateX(-50%);margin:0;
-  writing-mode:vertical-rl;font:700 14px/14px var(--sans);text-transform:uppercase;white-space:nowrap;
+  position:absolute;left:27.5px;transform:translateX(-50%);margin:0;
+  writing-mode:vertical-rl;font:700 15px/16px var(--sans);text-transform:uppercase;white-space:pre-line;text-align:center;
 }
-.tab.t .lab{top:62px}
+.tab.t .lab{top:34px}
 .tab.b .lab{bottom:62px}
 
 /* spine: the cover of the drawer. Three flaps sit behind it; hovering one opens it to show its name. */
 .spine{position:absolute;left:0;top:0;color:var(--ink);pointer-events:none}
 .spine path{stroke:currentColor;stroke-width:1}
 .spine path.faint{stroke:var(--faint)}
-.spine text{font:700 13px var(--sans);text-anchor:middle;dominant-baseline:central;fill:currentColor;opacity:0}
+.spine text{font:700 14px var(--sans);text-anchor:middle;dominant-baseline:central;fill:currentColor;opacity:0}
 .ttl,.mt{margin:0;width:calc(var(--L)*.04652);height:var(--L)}
 .ttl img,.mt img{position:absolute;left:50%;top:50%;display:block;width:var(--L);height:calc(var(--L)*.04652);max-width:none;transform:translate(-50%,-50%) rotate(90deg)}
-.ttl{--L:273px;position:absolute;left:75.57px;top:186.4px;transform:translate(-50%,-50%);pointer-events:none}
+.ttl{--L:273px;position:absolute;left:62.87px;top:186.4px;transform:translate(-50%,-50%);pointer-events:none}
 .flaps button{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden}
 .flaps button:focus-visible{outline:none}
 .strip{display:none}
