@@ -82,7 +82,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .panel .small{font-size:12px;line-height:17px;opacity:.6}
 
 /* info: a white strip across the middle of the screen, tilted like in the Figma */
-.tilt{position:absolute;left:960px;top:540px;pointer-events:none;width:1758.72px;height:82.06px;transform:translate(-50%,-50%) rotate(-24.24deg);background:#fff;z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 16px;color:#000;text-transform:uppercase;white-space:nowrap}
+.tilt{position:absolute;left:960px;top:540px;pointer-events:none;width:1758.72px;height:82.06px;transform:translate(-50%,-50%) rotate(-24.24deg);background:#f7f7f7;z-index:40;display:flex;flex-direction:column;justify-content:center;padding:0 16px;color:#000;text-transform:uppercase;white-space:nowrap}
 .tilt[hidden]{display:none}
 .tilt:not([hidden]){animation:fade .35s ease}
 .tilt.out{animation:fadeOut .3s ease forwards}
@@ -90,6 +90,20 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .tilt p{margin:0;width:max-content;font:400 calc(13px*var(--k,1))/20px var(--sans)}
 .tilt .h{font-weight:550;font-size:calc(16px*var(--k,1))}
 .tilt .f{color:#7e7e7e}
+
+/* team: a grey business card, turned 14 degrees. Click it to turn it over. */
+.tcard{position:absolute;left:754.8px;top:410.05px;width:452.424px;height:276.481px;margin:-138.24px 0 0 -226.21px;transform:rotate(14.04deg);z-index:41;perspective:1400px;cursor:pointer}
+.tcard[hidden]{display:none}
+.tcard:not([hidden]){animation:fade .35s ease}
+.tcard.out{animation:fadeOut .3s ease forwards}
+.flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,.7,.2,1)}
+.tcard.back .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;background:#e6e6e6;backface-visibility:hidden;-webkit-backface-visibility:hidden;color:#000}
+.face.back{transform:rotateY(180deg)}
+.face img{position:absolute;left:50%;transform:translateX(-50%);display:block;max-width:none}
+.face .nm{top:124px;width:320.456px;height:11.148px}
+.face .cm{top:122.4px;width:45.449px;height:12.678px}
+.face p{position:absolute;left:0;right:0;top:140px;margin:0;font:550 10.054px/12px var(--sans);text-transform:uppercase;text-align:center;white-space:nowrap}
 
 /* index: typed-catalogue style, "No." + dot leader + count */
 .ix{list-style:none;margin:0;padding:0}
@@ -132,7 +146,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* mobile: same drawer, one column at a time; hover becomes tap */
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
-.m .spine,.m .ttl,.m .flaps,.m .tilt{display:none}
+.m .spine,.m .ttl,.m .flaps,.m .tilt,.m .tcard{display:none}
 .m .tab path{vector-effect:non-scaling-stroke}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
 .m .mt{--L:190px;position:absolute;left:50%;top:20px;transform:translateX(-50%)}

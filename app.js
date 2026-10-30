@@ -1,6 +1,6 @@
 /* Collection: one folder column per category (Desktop - 4), scrolling sideways like a filing drawer. */
 const $=s=>document.querySelector(s);
-const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card'),tilt=$('#tilt');
+const stage=$('#stage'),rail=$('#rail'),sheet=$('#sheet'),blank=$('#blank'),panel=$('#panel'),card=$('#card'),tilt=$('#tilt'),tcard=$('#tcard');
 
 const ROW_Y=[39.87,191.58,343.30,495.01,646.72,798.43,950.15];
 const ROW_PITCH=151.71,ITEM_H=65,ITEM_X=40.75;
@@ -268,36 +268,37 @@ const PANELS={
   team:`<h2>Team</h2><p class="big">Name Surname<br>Name Surname<br>Name Surname</p><p>Placeholder names. Each template credits the creative who made it.</p>`,
   contact:`<h2>Contact</h2><p class="big">hello@carpetamanila.example</p><p>Write to suggest a collaboration or to submit a template.</p><p class="small">Placeholder address.</p>`
 };
-let tiltT=0;
-function closeTilt(){
-  if(tilt.hidden||tilt.classList.contains('out'))return;
-  tilt.classList.add('out');
-  tiltT=setTimeout(()=>{tilt.hidden=true;tilt.classList.remove('out')},320);
+/* fade a floating block out, then hide it. Reopening during the fade cancels it. */
+function fadeClose(el){
+  if(el.hidden||el.classList.contains('out'))return;
+  el.classList.add('out');
+  el._t=setTimeout(()=>{el.hidden=true;el.classList.remove('out');el.classList.remove('back')},320);
 }
-function closePanel(){panel.hidden=true;closeTilt()}
-/* the three flaps open their blocks on click. They stack on screen and stay until a click lands outside. Only Info has a design so far. */
+function showBlock(el){clearTimeout(el._t);el.classList.remove('out');el.hidden=false}
+function closePanel(){panel.hidden=true;fadeClose(tilt);fadeClose(tcard)}
 function openPanel(name){
   hide(true);closeCard();
   if(name==='info'){
     if(mq.matches){tilt.hidden=true;panel.innerHTML=PANELS.info;panel.hidden=false;return}
-    clearTimeout(tiltT);tilt.classList.remove('out');tilt.hidden=false;
+    showBlock(tilt);
     /* the strip is as long as in the Figma: scale the three lines so the longest one fills it like the design does */
     tilt.style.setProperty('--k',1);
     const need=Math.max(...[...tilt.children].map(p=>p.offsetWidth)),room=tilt.clientWidth-32;
     tilt.style.setProperty('--k',(room/need).toFixed(4));
   }
-  /* Team and Contact: nothing to show yet */
+  if(name==='team'&&!mq.matches)showBlock(tcard);
+  /* Contact: nothing to show yet */
 }
 document.addEventListener('click',e=>{
   if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
   const b=e.target.closest('[data-panel]');
   if(b){openPanel(b.dataset.panel);return}
-  if((!panel.hidden||!tilt.hidden)&&!panel.contains(e.target))closePanel();
+  if((!panel.hidden||!tilt.hidden||!tcard.hidden)&&!panel.contains(e.target)&&!tcard.contains(e.target))closePanel();
   if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item'))closeCard();
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closePanel();closeCard();hide(true)}
-  else if(panel.hidden&&tilt.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
+  else if(panel.hidden&&tilt.hidden&&tcard.hidden&&card.hidden&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!e.target.closest('.cs')){step(e.key==='ArrowRight'?1:-1)}
 });
 
 /* entrance. Each folder is turned in 3D, and its outline is drawn apart as ONE line that begins as a straight line on the hinge and unfolds into the tab shape,
@@ -335,3 +336,6 @@ function runIntro(){
   frame(t0);root.classList.remove('pre');requestAnimationFrame(frame);
 }
 Promise.all([document.fonts.load('700 15px "Libre Franklin"'),document.fonts.load('550 11px "Libre Franklin"')]).catch(()=>{}).then(()=>{fitTabs();runIntro()});
+
+/* the card turns over on click */
+tcard.addEventListener('click',()=>tcard.classList.toggle('back'));
