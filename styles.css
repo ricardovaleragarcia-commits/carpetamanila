@@ -1,3 +1,9 @@
+/* Clarendon Text Pro (text) and Clarendon Wide (logo): commercial faces. They load from the visitor's machine or from fonts/ once licensed web files are added there; Bitter is the stand-in meanwhile. */
+@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:normal;font-display:swap;src:local('Clarendon Text Pro'),local('ClarendonTextPro-Regular'),url(fonts/ClarendonTextPro-Regular.woff2) format('woff2')}
+@font-face{font-family:'Clarendon Text Pro';font-weight:400;font-style:italic;font-display:swap;src:local('Clarendon Text Pro Italic'),local('ClarendonTextPro-Italic'),url(fonts/ClarendonTextPro-Italic.woff2) format('woff2')}
+@font-face{font-family:'Clarendon Text Pro';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Text Pro Bold'),local('ClarendonTextPro-Bold'),url(fonts/ClarendonTextPro-Bold.woff2) format('woff2')}
+@font-face{font-family:'Clarendon Wide';font-weight:700;font-style:normal;font-display:swap;src:local('Clarendon Wide Bold'),local('ClarendonWide-Bold'),url(fonts/ClarendonWide-Bold.woff2) format('woff2')}
+
 /* Desktop - 4 (Figma, 1920 x 1080): a horizontal filing drawer. Spine fixed on the left, one folder column per category, tabs staggered top / bottom. */
 :root{
   --paper:#f4e2c1;
@@ -7,7 +13,7 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink)}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:var(--paper);color:var(--ink)}
 body{font:400 14px/17px var(--serif)}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 :focus-visible{outline:1px solid var(--ink);outline-offset:4px}
@@ -20,15 +26,16 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* rail: horizontal scroll of folder columns, snaps to a column */
 #rail{
   position:absolute;left:146px;top:0;width:1774px;height:1080px;display:flex;
-  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:none;
 }
+@media (hover:hover) and (pointer:fine){#rail{scroll-snap-type:none}}
 #rail::-webkit-scrollbar,.cs::-webkit-scrollbar{display:none}
 .col{position:relative;flex:none;width:369.3px;height:1080px;scroll-snap-align:start}
-.cs{position:absolute;left:0;top:0;width:316px;height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.cs{position:absolute;left:0;top:0;width:316px;height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:none}
 .ci{position:relative;width:316px}
 
 /* entries */
-.item{position:absolute;left:var(--x);top:var(--y);display:grid;grid-template-columns:38.68px 176px;cursor:default;outline-offset:6px}
+.item{position:absolute;left:var(--x);top:var(--y);display:grid;grid-template-columns:38.68px 176px;cursor:pointer;outline-offset:6px}
 .item .n{font-weight:700}
 .item .t{display:block;white-space:nowrap}
 .item .t>span{display:block}
@@ -49,7 +56,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .spine{position:absolute;left:37.2px;top:30.92px;color:var(--ink)}
 .ttl{
   position:absolute;left:107.5px;top:163.4px;transform:translate(-50%,-50%);margin:0;
-  writing-mode:vertical-rl;font:800 20px/20px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap;
+  writing-mode:vertical-rl;font:700 20px/20px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap;
 }
 .tag{
   position:absolute;left:102.5px;top:852.2px;transform:translate(-50%,-50%);margin:0;
@@ -59,8 +66,8 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 /* menu: closed it sits in the middle of the spine, open it rises and reveals the links */
 #menu{position:absolute;left:0;top:0;width:1920px;height:0}
-.ml,#mi button{position:absolute;left:62.08px;width:62.9px;text-align:center;font-size:13px;border-bottom:1px solid var(--ink)}
-.ml{top:530px;height:21.1px;line-height:16px;padding-bottom:4.1px;transition:top .6s cubic-bezier(.3,.7,.2,1)}
+.ml,#mi button{position:absolute;left:60.25px;width:62.9px;text-align:center;font-size:13px;border-bottom:1px solid var(--ink)}
+.ml{top:469px;height:21.1px;line-height:16px;padding-bottom:4.1px;transition:top .6s cubic-bezier(.3,.7,.2,1)}
 #menu.open .ml{top:356.3px}
 #mi button{height:18.67px;line-height:13px;padding-bottom:4.67px;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .35s ease,transform .5s cubic-bezier(.3,.7,.2,1)}
 #mi button:nth-child(1){top:451px}
@@ -73,15 +80,15 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 #menu.open #mi button:nth-child(3){transition-delay:.34s}
 #menu.open #mi button:nth-child(4){transition-delay:.42s}
 
-/* hover sheet: the white rectangle in Desktop - 2 */
-.sheet,.panel{
-  position:absolute;left:650.11px;top:136.96px;width:619.79px;height:806.08px;background:#fff;overflow:hidden;
-}
+/* hover sheet: a blank white sheet centred where Desktop - 2 puts the white rectangle */
+.sheet,.panel,.card{position:absolute;left:650.11px;top:136.96px;width:619.79px;height:806.08px}
 .sheet{opacity:0;pointer-events:none;transition:opacity .12s;z-index:20}
 .sheet.on{opacity:1}
-.sheet-in{width:816px;height:1061.2px;transform-origin:0 0;transform:scale(.7596)}
-.sheet-in .tpl{height:1061.2px}
+.blank{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#fff}
+.panel{background:#fff;overflow:hidden}
 .panel{z-index:40;padding:44px;overflow:auto}
+.card{z-index:45;left:50%;top:50%;width:480px;height:auto;max-height:92%;transform:translate(-50%,-50%);padding:34px 38px 26px;background:#fff;overflow:auto}
+.card[hidden]{display:none}
 .panel h2{margin:0 0 20px;font-size:11px;line-height:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
 .panel p{margin:0 0 14px;font-size:15px;line-height:22px}
 .panel .big{font-size:30px;line-height:36px;font-weight:700}
@@ -95,6 +102,25 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .ix .ld{flex:1;height:3px;margin-bottom:5px;background:radial-gradient(circle,var(--ink) .8px,transparent 1.1px) 0 100%/6px 3px repeat-x}
 .ix .ct{flex:none;font-weight:700}
 .ix button:hover .nm{font-style:italic}
+.cc{display:flex;gap:22px;align-items:flex-start;margin-bottom:22px}
+.cth{flex:none;width:112px;height:112px;display:flex;align-items:center;justify-content:center;background:var(--paper)}
+.cth i{display:block;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.18)}
+.cm{min-width:0}
+.cm h2,.card h2{margin:6px 0 4px;font-size:24px;line-height:28px;font-weight:700;letter-spacing:0;text-transform:none}
+.cm p{margin:0;font-size:14px;line-height:19px}
+.kk{margin:0 0 4px;font-size:10px;line-height:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.card .kk{margin-top:18px}
+.cc .kk{margin-top:0}
+.r{margin:0 0 6px}
+.r div{display:flex;align-items:flex-end;gap:10px;padding:4px 0;font-size:14px;line-height:18px}
+.r dt{flex:none;width:58px;font-size:12px;letter-spacing:.04em}
+.r dd{margin:0;font-weight:700}
+.card .ix button{padding:8px 0;font-size:16px}
+.card .ix .no{width:auto}
+.stamp{display:inline-block;margin:16px 0 0;padding:4px 10px;border:1.5px solid var(--ink);font-size:11px;line-height:14px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;transform:rotate(-2.5deg);animation:stamp .25s ease-out}
+.stamp[hidden]{display:none}
+@keyframes stamp{from{transform:rotate(-2.5deg) scale(1.35);opacity:0}to{transform:rotate(-2.5deg) scale(1);opacity:1}}
+.x{display:block;margin:18px 0 0 auto;font-size:13px;line-height:16px;border-bottom:1px solid var(--ink)}
 .mlist{display:grid;gap:4px}
 .mlist button{padding:10px 0;font-size:22px;line-height:26px;text-align:left}
 
@@ -104,17 +130,19 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
 .m .spine,.m .ttl,.m .tag,.m #menu{display:none}
 .m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
-.m .mt{position:absolute;left:50%;top:20px;transform:translateX(-50%);margin:0;writing-mode:vertical-rl;font:800 16px/16px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap}
+.m .mt{position:absolute;left:50%;top:20px;transform:translateX(-50%);margin:0;writing-mode:vertical-rl;font:700 16px/16px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap}
 .m #mmb{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);writing-mode:vertical-rl;font-size:13px;line-height:13px;padding:0 0 0 4px;border-left:1px solid var(--ink)}
 .m #rail{left:46px;width:calc(100vw - 46px);height:100%}
 .m .col{width:calc(100vw - 46px);height:100%}
 .m .cs{width:calc(100% - 30px)}
 .m .ci{width:100%;padding:26px 20px 60px}
-.m .item{position:relative;left:auto;top:auto;margin:0 0 30px;cursor:pointer}
+.m .item{position:relative;left:auto;top:auto;margin:0 0 30px}
 .m .tab{left:auto;right:0;top:12px;bottom:12px;width:30px;height:auto}
 .m .lab{left:50%;transform:translateX(-50%)}
 .m .tab.t .lab{top:14%}
 .m .tab.b .lab{top:auto;bottom:10%}
-.m .sheet{left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;box-shadow:0 0 0 100vmax rgba(40,28,10,.4);width:var(--sw);height:calc(var(--sw)*1.3006)}
-.m .sheet.on{pointer-events:auto}
+
+.m .sheet{display:none}
+.m .card{width:min(92vw,480px);max-height:88dvh;padding:26px 22px 20px}
+.m .cc{gap:16px}
 .m .panel{left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);height:auto;max-height:84dvh;padding:30px 26px;z-index:40}
