@@ -1,0 +1,120 @@
+/* Desktop - 4 (Figma, 1920 x 1080): a horizontal filing drawer. Spine fixed on the left, one folder column per category, tabs staggered top / bottom. */
+:root{
+  --paper:#f4e2c1;
+  --ink:#000;
+  --serif:'Clarendon Text Pro','Clarendon',Bitter,Georgia,'Times New Roman',serif;
+  --wide:'Clarendon Wide','Clarendon Text Pro','Clarendon',Bitter,Georgia,serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--paper);color:var(--ink)}
+body{font:400 14px/17px var(--serif)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--ink);outline-offset:4px}
+
+#stage{
+  position:fixed;left:50%;top:50%;width:1920px;height:1080px;
+  transform:translate(-50%,-50%) scale(var(--s,1));transform-origin:50% 50%;
+}
+
+/* rail: horizontal scroll of folder columns, snaps to a column */
+#rail{
+  position:absolute;left:146px;top:0;width:1774px;height:1080px;display:flex;
+  overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain;
+}
+#rail::-webkit-scrollbar,.cs::-webkit-scrollbar{display:none}
+.col{position:relative;flex:none;width:369.3px;height:1080px;scroll-snap-align:start}
+.cs{position:absolute;left:0;top:0;width:316px;height:100%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.ci{position:relative;width:316px}
+
+/* entries */
+.item{position:absolute;left:var(--x);top:var(--y);display:grid;grid-template-columns:38.68px 176px;cursor:default;outline-offset:6px}
+.item .n{font-weight:700}
+.item .t{display:block;white-space:nowrap}
+.item .t>span{display:block}
+.item i{font-style:italic}
+
+/* category tab: fixed beside its column, never scrolls with it */
+.tab{position:absolute;left:316px;top:30.92px;width:54px;height:1000px;pointer-events:none}
+.tab svg{display:block;width:100%;height:100%;overflow:visible}
+.tab path{vector-effect:non-scaling-stroke}
+.lab{
+  position:absolute;left:32.5px;margin:0;
+  writing-mode:vertical-rl;font:400 14px/14px var(--serif);letter-spacing:.06em;white-space:nowrap;
+}
+.tab.t .lab{top:100px}
+.tab.b .lab{top:818px}
+
+/* spine (the cover of the drawer, twice as wide as a tab) */
+.spine{position:absolute;left:37.2px;top:30.92px;color:var(--ink)}
+.ttl{
+  position:absolute;left:107.5px;top:163.4px;transform:translate(-50%,-50%);margin:0;
+  writing-mode:vertical-rl;font:800 20px/20px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap;
+}
+.tag{
+  position:absolute;left:102.5px;top:852.2px;transform:translate(-50%,-50%);margin:0;
+  writing-mode:vertical-rl;font:400 13px/13px var(--serif);white-space:nowrap;
+}
+.strip{display:none}
+
+/* menu: closed it sits in the middle of the spine, open it rises and reveals the links */
+#menu{position:absolute;left:0;top:0;width:1920px;height:0}
+.ml,#mi button{position:absolute;left:62.08px;width:62.9px;text-align:center;font-size:13px;border-bottom:1px solid var(--ink)}
+.ml{top:530px;height:21.1px;line-height:16px;padding-bottom:4.1px;transition:top .6s cubic-bezier(.3,.7,.2,1)}
+#menu.open .ml{top:356.3px}
+#mi button{height:18.67px;line-height:13px;padding-bottom:4.67px;opacity:0;pointer-events:none;transform:translateY(14px);transition:opacity .35s ease,transform .5s cubic-bezier(.3,.7,.2,1)}
+#mi button:nth-child(1){top:451px}
+#mi button:nth-child(2){top:477.34px}
+#mi button:nth-child(3){top:503.68px}
+#mi button:nth-child(4){top:530.02px}
+#menu.open #mi button{opacity:1;pointer-events:auto;transform:none}
+#menu.open #mi button:nth-child(1){transition-delay:.18s}
+#menu.open #mi button:nth-child(2){transition-delay:.26s}
+#menu.open #mi button:nth-child(3){transition-delay:.34s}
+#menu.open #mi button:nth-child(4){transition-delay:.42s}
+
+/* hover sheet: the white rectangle in Desktop - 2 */
+.sheet,.panel{
+  position:absolute;left:650.11px;top:136.96px;width:619.79px;height:806.08px;background:#fff;overflow:hidden;
+}
+.sheet{opacity:0;pointer-events:none;transition:opacity .12s;z-index:20}
+.sheet.on{opacity:1}
+.sheet-in{width:816px;height:1061.2px;transform-origin:0 0;transform:scale(.7596)}
+.sheet-in .tpl{height:1061.2px}
+.panel{z-index:40;padding:44px;overflow:auto}
+.panel h2{margin:0 0 20px;font-size:11px;line-height:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.panel p{margin:0 0 14px;font-size:15px;line-height:22px}
+.panel .big{font-size:30px;line-height:36px;font-weight:700}
+.panel .small{font-size:12px;line-height:17px;opacity:.6}
+
+/* index: typed-catalogue style, "No." + dot leader + count */
+.ix{list-style:none;margin:0;padding:0}
+.ix button{display:flex;align-items:flex-end;gap:10px;width:100%;padding:11px 0;text-align:left;font-size:17px;line-height:20px}
+.ix .no{flex:none;width:58px;font-size:12px;line-height:20px;letter-spacing:.04em}
+.ix .nm{flex:none}
+.ix .ld{flex:1;height:3px;margin-bottom:5px;background:radial-gradient(circle,var(--ink) .8px,transparent 1.1px) 0 100%/6px 3px repeat-x}
+.ix .ct{flex:none;font-weight:700}
+.ix button:hover .nm{font-style:italic}
+.mlist{display:grid;gap:4px}
+.mlist button{padding:10px 0;font-size:22px;line-height:26px;text-align:left}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* mobile: same drawer, one column at a time; hover becomes tap */
+.m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
+.m .spine,.m .ttl,.m .tag,.m #menu{display:none}
+.m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
+.m .mt{position:absolute;left:50%;top:20px;transform:translateX(-50%);margin:0;writing-mode:vertical-rl;font:800 16px/16px var(--wide);text-transform:uppercase;opacity:.8;white-space:nowrap}
+.m #mmb{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);writing-mode:vertical-rl;font-size:13px;line-height:13px;padding:0 0 0 4px;border-left:1px solid var(--ink)}
+.m #rail{left:46px;width:calc(100vw - 46px);height:100%}
+.m .col{width:calc(100vw - 46px);height:100%}
+.m .cs{width:calc(100% - 30px)}
+.m .ci{width:100%;padding:26px 20px 60px}
+.m .item{position:relative;left:auto;top:auto;margin:0 0 30px;cursor:pointer}
+.m .tab{left:auto;right:0;top:12px;bottom:12px;width:30px;height:auto}
+.m .lab{left:50%;transform:translateX(-50%)}
+.m .tab.t .lab{top:14%}
+.m .tab.b .lab{top:auto;bottom:10%}
+.m .sheet{left:50%;top:50%;transform:translate(-50%,-50%);z-index:30;box-shadow:0 0 0 100vmax rgba(40,28,10,.4);width:var(--sw);height:calc(var(--sw)*1.3006)}
+.m .sheet.on{pointer-events:auto}
+.m .panel{left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);height:auto;max-height:84dvh;padding:30px 26px;z-index:40}
