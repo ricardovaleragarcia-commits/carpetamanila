@@ -28,14 +28,21 @@
     <button data-panel="contact">Contact</button>
   </nav>
 
-  <aside class="strip">
-    <h1 class="mt"><img src="assets/logo.svg" alt="Carpeta Manila"></h1>
-    <nav class="mn">
-      <button data-panel="info">Info</button>
-      <button data-panel="team">Team</button>
-      <button data-panel="contact">Contact</button>
-    </nav>
-  </aside>
+  <div class="mob" id="mob">
+    <header class="mbar">
+      <h1><img src="assets/logo.svg" alt="Carpeta Manila"></h1>
+      <nav aria-label="Main">
+        <button data-panel="info">Info</button>
+        <button data-panel="team">Team</button>
+        <button data-panel="contact">Contact</button>
+      </nav>
+    </header>
+    <div class="mzone" id="mzone">
+      <div class="msheet" id="msheet" role="button" tabindex="0" aria-label="Open the retrieval slip"></div>
+      <p class="mcap" id="mcap"></p>
+    </div>
+    <div class="mdr"><div class="mrail" id="mrail" aria-label="Templates by category"></div></div>
+  </div>
 
   <div class="tilt" id="tilt" hidden role="dialog" aria-label="Info">
     <p class="h">Carpeta Manila is a growing collection of open access templates and resources.</p>

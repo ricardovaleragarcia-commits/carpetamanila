@@ -83,7 +83,7 @@ COUNTS.forEach((n,t)=>{
 });
 
 function fitTabs(){
-  if(matchMedia('(max-width:760px)').matches)return;
+  if(mq.matches)return;
   rail.querySelectorAll('.tab').forEach(tab=>{
     const dy=Math.max(0,62+tab.querySelector('.lab').offsetHeight+48-172);
     tab._dy=dy;
@@ -93,13 +93,14 @@ function fitTabs(){
 }
 
 /* fit the 1920 x 1080 frame to the window; below 760px switch to the mobile drawer */
-const mq=matchMedia('(max-width:760px)');
+const mq=matchMedia('(max-width:760px), (hover:none) and (pointer:coarse) and (max-height:520px)');   /* phones, upright or on their side */
 let S=1;
 function fitStage(){
   const m=mq.matches;
   document.documentElement.classList.toggle('m',m);
   S=m?1:Math.min(innerWidth/1920,innerHeight/1080);
   if(!m)stage.style.setProperty('--s',S);
+  else{stage.style.setProperty('--ms',Math.min(1,innerWidth*.88/452,innerHeight*.78/276).toFixed(3));stage.style.setProperty('--mn',Math.min(1,innerWidth*.88/342,innerHeight*.78/131).toFixed(3))}
 }
 addEventListener('resize',fitStage);fitStage();
 
@@ -220,6 +221,52 @@ document.addEventListener('wheel',e=>{
 },{passive:false});
 rail.addEventListener('scroll',()=>hide(true),{passive:true});
 
+/* mobile drawer: folders run sideways in the lower half; the entry in the middle shows its blank sheet in the upper half.
+   Native touch scrolling with snap, so momentum feels like the phone's own. */
+const mrail=$('#mrail'),msheet=$('#msheet'),mzone=$('#mzone'),mcap=$('#mcap');
+const mitems=[];
+COUNTS.forEach((n,t)=>{
+  const g=document.createElement('section');g.className='mg '+(t%2?'b':'t');g.style.setProperty('--i',t);g.setAttribute('aria-label',LABELS[t]);
+  g.innerHTML=`<div class="gb"></div><div class="gt"><p class="gl">${LABELS[t]}</p></div>`;
+  const gb=g.firstChild;
+  ITEMS.filter(i=>i.type===t).forEach((it,v)=>{
+    const d=document.createElement('div');
+    d.className='mi';d.dataset.id=it.id;d.tabIndex=0;d.setAttribute('role','button');
+    d.innerHTML=`<span class="n">${pad(v+1)}.</span><span class="t"><span>${it.name}</span><span>${TYPES[t].n}</span><span>By <i>${it.by}</i></span><span>${it.date}</span><span>Retrieve</span></span>`;
+    gb.append(d);mitems.push(d);
+  });
+  mrail.append(g);
+});
+let mact=null,mraf=0;
+function msize(){
+  if(!mact)return;
+  const {p,w,h,size,orient}=dims(byId.get(+mact.dataset.id).f);
+  const k=Math.min((mzone.clientWidth-56)/w,(mzone.clientHeight-84)/h);
+  msheet.style.width=Math.max(20,w*k)+'px';msheet.style.height=Math.max(20,h*k)+'px';
+  mcap.textContent=`${p.n} · ${orient} · ${size}`;
+}
+function mpick(){
+  mraf=0;
+  const r=mrail.getBoundingClientRect(),c=r.left+r.width/2;let best=null,bd=1e9;
+  for(const it of mitems){const q=it.getBoundingClientRect(),d=Math.abs(q.left+q.width/2-c);if(d<bd){bd=d;best=it}}
+  if(best&&best!==mact){mact&&mact.classList.remove('on');mact=best;best.classList.add('on');msize()}
+}
+function mrefit(){
+  if(!mq.matches)return;
+  mrail.style.setProperty('--pad',Math.max(0,mrail.clientWidth/2-95-28)+'px');
+  mpick();msize();
+}
+mrail.addEventListener('scroll',()=>{if(!mraf)mraf=requestAnimationFrame(mpick)},{passive:true});
+mrail.addEventListener('click',e=>{
+  const it=e.target.closest('.mi');if(!it)return;
+  if(it===mact)openCard(it);else it.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+});
+mrail.addEventListener('keydown',e=>{const it=e.target.closest('.mi');if(it&&(e.key==='Enter'||e.key===' ')){e.preventDefault();it===mact?openCard(it):it.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'})}});
+msheet.addEventListener('click',()=>{if(mact)openCard(mact)});
+msheet.addEventListener('keydown',e=>{if(mact&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openCard(mact)}});
+addEventListener('resize',mrefit);
+mrefit();
+
 /* spine flaps: three strips behind the logo. At rest they are slim; the one under the pointer opens, and everything below it moves down with it. */
 const RX=97.2,LX=29.54,DY=58.37,EXTRA=100,STRIP=25;
 const BASE=[338.5,363.4,388.4,413.4];          /* where each diagonal starts on the right line, all strips slim */
@@ -293,23 +340,24 @@ function closePanel(){order=[];panel.hidden=true;fadeClose(tilt);fadeClose(tcard
 function openPanel(name){
   hide(true);closeCard();
   if(name==='info'){
-    if(mq.matches){tilt.hidden=true;panel.innerHTML=PANELS.info;panel.hidden=false;return}
     showBlock(tilt);
+    if(!mq.matches){
     /* the strip is as long as in the Figma: scale the three lines so the longest one fills it like the design does */
     tilt.style.setProperty('--k',1);
     const need=Math.max(...[...tilt.children].map(p=>p.offsetWidth)),room=tilt.clientWidth-32;
     tilt.style.setProperty('--k',(room/need).toFixed(4));
+    }
   }
-  if(name==='contact'&&!mq.matches)showBlock(tcard);   /* the grey card now belongs to Contact; its content is a placeholder until the contact data arrives */
-  if(name==='team'&&!mq.matches)showBlock(ntag);
-  if(!mq.matches)bringFront(name);
+  if(name==='contact')showBlock(tcard);   /* the grey card now belongs to Contact; its content is a placeholder until the contact data arrives */
+  if(name==='team')showBlock(ntag);
+  bringFront(name);
 }
 document.addEventListener('click',e=>{
   if(!mq.matches){const k=flapAt(e);if(k>=0){openPanel(FLAP_ID[k]);return}}
   const b=e.target.closest('[data-panel]');
   if(b){openPanel(b.dataset.panel);return}
   if((!panel.hidden||!tilt.hidden||!tcard.hidden||!ntag.hidden)&&!panel.contains(e.target)&&!tcard.contains(e.target))closePanel();
-  if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item'))closeCard();
+  if(!card.hidden&&!card.contains(e.target)&&!e.target.closest('.item,.mi,.msheet'))closeCard();
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){closePanel();closeCard();hide(true)}

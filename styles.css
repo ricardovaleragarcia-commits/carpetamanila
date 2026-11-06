@@ -64,7 +64,6 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .ttl{--L:273px;position:absolute;left:62.87px;top:186.4px;transform:translate(-50%,-50%);pointer-events:none}
 .flaps button{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden}
 .flaps button:focus-visible{outline:none}
-.strip{display:none}
 .hit{cursor:pointer}
 
 /* hover sheet: a blank white sheet centred where Desktop - 2 puts the white rectangle */
@@ -168,25 +167,54 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .pre .cs,.pre .lab,.pre .cover .ttl{animation:none;opacity:0}
 @media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
 
-/* mobile: same drawer, one column at a time; hover becomes tap */
+/* mobile (phones, portrait or landscape): the same drawer turned on its side. Folders run left to right in the lower half; whichever entry sits in the middle
+   puts its blank sheet in the upper half. Tabs stagger top / bottom and stay on screen while their folder passes. */
+.mob{display:none}
 .m #stage{left:0;top:0;width:100vw;height:100dvh;transform:none}
-.m .spine,.m .ttl,.m .flaps,.m .tilt,.m .tcard,.m .ntag{display:none}
-.m .tab path{vector-effect:non-scaling-stroke}
-.m .strip{display:block;position:absolute;left:0;top:0;width:46px;height:100%;border-right:1px solid var(--ink)}
-.m .mt{--L:190px;position:absolute;left:50%;top:20px;transform:translateX(-50%)}
-.m .mn{position:absolute;left:0;right:0;bottom:16px;display:flex;flex-direction:column;align-items:center;gap:16px}
-.m .mn button{writing-mode:vertical-rl;font:700 12px/12px var(--sans)}
-.m #rail{left:46px;width:calc(100vw - 46px);height:100%}
-.m .col{width:calc(100vw - 46px);height:100%}
-.m .cs{width:calc(100% - 30px)}
-.m .ci{width:100%;padding:26px 20px 60px}
-.m .item{position:relative;left:auto;top:auto;margin:0 0 30px;pointer-events:auto}
-.m .tab{left:auto;right:0;top:12px;bottom:12px;width:30px;height:auto}
-.m .lab{left:50%}
-.m .tab.t .lab{top:14%}
-.m .tab.b .lab{bottom:10%}
+.m .spine,.m .ttl,.m .flaps,.m .cover,.m #rail,.m .sheet,.m .panel{display:none}
+.m .mob{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr minmax(236px,42dvh)}
+.mbar{position:relative;z-index:60;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 0;border-bottom:1px solid var(--ink);animation:fade .7s backwards}
+.mbar h1{margin:0}
+.mbar h1 img{display:block;width:100%;height:auto}
+.mbar nav{display:flex;justify-content:space-between;padding:4px 0}
+.mbar button{padding:10px 0;font:700 13px/16px var(--sans)}
+.mzone{position:relative;overflow:hidden;animation:fade .7s .15s backwards}
+.msheet{position:absolute;left:50%;top:calc(50% - 14px);transform:translate(-50%,-50%);background:#fff;cursor:pointer;transition:width .38s cubic-bezier(.3,.7,.2,1),height .38s cubic-bezier(.3,.7,.2,1)}
+.mcap{position:absolute;left:0;right:0;bottom:12px;margin:0;text-align:center;font:700 10px/12px var(--sans);letter-spacing:.1em;text-transform:uppercase}
+.mdr{position:relative;padding-bottom:env(safe-area-inset-bottom,0px)}
+.mrail{position:absolute;left:0;right:0;top:0;bottom:env(safe-area-inset-bottom,0px);display:flex;padding:0 var(--pad,100px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.mrail::-webkit-scrollbar{display:none}
+.mg{position:relative;flex:none;display:flex;animation:mfade .7s calc(var(--i)*140ms + 150ms) backwards}
+@keyframes mfade{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+.gb{flex:1;display:flex;align-items:center;gap:28px;margin:38px 0;padding:0 28px;border:1px solid var(--ink);border-right:0}
+.mg:last-child .gb{border-right:1px solid var(--ink)}
+.gt{position:absolute;left:0;right:0;height:39px;pointer-events:none}
+.mg.t .gt{top:0}.mg.b .gt{bottom:0}
+.gl{position:sticky;left:12px;display:inline-block;margin:0 0 0 12px;height:39px;padding:0 14px;background:var(--paper);border:1px solid var(--ink);font:700 12px/38px var(--sans);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.mg.t .gl{border-bottom:0;border-radius:9px 9px 0 0}
+.mg.b .gl{border-top:0;border-radius:0 0 9px 9px}
+.mi{flex:none;width:190px;display:grid;grid-template-columns:34px 1fr;scroll-snap-align:center;cursor:pointer;opacity:.3;transition:opacity .25s;outline-offset:6px;-webkit-tap-highlight-color:transparent}
+.mi.on{opacity:1}
+.mi .n{font:700 12px/15px var(--sans)}
+.mi .t{display:block;min-width:0;font:550 12px/15px var(--sans);text-transform:uppercase}
+.mi .t>span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mi i{font-style:normal}
 
-.m .sheet{display:none}
+/* the three blocks on a phone: same stacking by click, smaller and nearer the middle */
+.m .tilt{left:50%;top:44%;width:min(88vw,430px);height:auto;padding:22px 20px;white-space:normal;transform:translate(-50%,-50%) rotate(-7deg)}
+.m .tilt p{width:auto;font-size:12px;line-height:17px}
+.m .tilt .h{font-size:14px;line-height:20px;margin-bottom:8px}
+.m .tilt .b{margin-bottom:8px}
+.m .tcard{left:50%;top:36%;transform:rotate(12deg) scale(var(--ms,.8))}
+.m .ntag{left:48%;top:60%;transform:rotate(-12deg) scale(var(--mn,1))}
 .m .card{width:min(92vw,480px);max-height:88dvh;padding:26px 22px 20px}
 .m .cc{gap:16px}
-.m .panel{left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,560px);height:auto;max-height:84dvh;padding:30px 26px;z-index:40}
+
+@media (orientation:landscape){
+  .m .mob{grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr}
+  .m .mbar{grid-column:1/-1;display:flex;align-items:center;gap:24px;padding:calc(8px + env(safe-area-inset-top,0px)) 16px 8px}
+  .m .mbar h1{flex:none;width:230px}
+  .m .mbar nav{flex:1;padding:0}
+  .m .mdr{grid-column:2;grid-row:2}
+  .m .mzone{grid-column:1;grid-row:2}
+}
